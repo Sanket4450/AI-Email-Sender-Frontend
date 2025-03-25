@@ -1,6 +1,5 @@
 import { LinksFunction } from '@remix-run/node'
 import Sidebar from '~/components/layout/sidebar'
-import { VALUES } from '~/lib/values'
 
 import styles from '~/tailwind.css?url'
 import Header from './header'
@@ -16,7 +15,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     <div className="h-[100svh] relative overflow-hidden">
       <Header />
 
-      <div className="w-full flex">
+      <div className="h-full w-full flex">
         <Sidebar />
 
         <main className="h-full flex-1 min-w-0 overflow-y-auto">

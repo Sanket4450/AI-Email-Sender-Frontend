@@ -14,7 +14,6 @@ const navItems = [
 export default function Sidebar() {
   return (
     <div className="h-full bg-gray-50 border-r border-gray-200 p-4" style={{ width: VALUES.SIDEBAR_WIDTH }}>
-     
       <nav className="space-y-2">
         {navItems.map((item) => (
           <NavLink

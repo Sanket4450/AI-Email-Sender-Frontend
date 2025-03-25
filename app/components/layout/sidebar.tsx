@@ -1,8 +1,9 @@
 import { NavLink } from '@remix-run/react'
 import { Building, Users, FileText, Mail, Send, ChartNoAxesCombined } from 'lucide-react'
+import { VALUES } from '~/lib/values'
 
 const navItems = [
-  { name: 'Dashboard', icon: ChartNoAxesCombined, to: '/companies' },
+  { name: 'Dashboard', icon: ChartNoAxesCombined, to: '/' },
   { name: 'Companies', icon: Building, to: '/companies' },
   { name: 'Contacts', icon: Users, to: '/contacts' },
   { name: 'Drafts', icon: FileText, to: '/drafts' },
@@ -12,11 +13,8 @@ const navItems = [
 
 export default function Sidebar() {
   return (
-    <div className="w-64 h-screen bg-gray-50 border-r border-gray-200 p-4">
-      <div className="flex items-center mb-8">
-        <Mail className="h-6 w-6 text-blue-600 mr-2" />
-        <h1 className="text-xl font-bold text-gray-800">EmailSender</h1>
-      </div>
+    <div className="h-full bg-gray-50 border-r border-gray-200 p-4" style={{ width: VALUES.SIDEBAR_WIDTH }}>
+     
       <nav className="space-y-2">
         {navItems.map((item) => (
           <NavLink

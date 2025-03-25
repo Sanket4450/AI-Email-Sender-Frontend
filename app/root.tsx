@@ -1,4 +1,4 @@
-import { LinksFunction } from '@remix-run/node'
+import { LinksFunction, MetaFunction } from '@remix-run/node'
 import {
   Links,
   Meta,
@@ -8,9 +8,15 @@ import {
 } from '@remix-run/react'
 
 import stylesheet from '~/tailwind.css?url'
+import AppLayout from './components/layout/app-layout'
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: stylesheet },
+]
+
+export const meta: MetaFunction = () => [
+  { title: 'EmailSender Dashboard' },
+  { name: 'description', content: 'A dashboard for managing email campaigns.' },
 ]
 
 export default function App() {
@@ -26,8 +32,9 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <h1 className="bg-red-500 text-white">Hello</h1>
-        <Outlet />
+        <AppLayout>
+          <Outlet />
+        </AppLayout>
         <ScrollRestoration />
         <Scripts />
       </body>

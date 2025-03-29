@@ -14,8 +14,6 @@ interface CompaniesTableProps<T> {
 }
 
 export const DataTable = <T,>({ columns, data }: CompaniesTableProps<T>) => {
-  
-      
   return (
     <Table>
       <TableHeader>
@@ -45,7 +43,10 @@ export const DataTable = <T,>({ columns, data }: CompaniesTableProps<T>) => {
                 <TableCell
                   key={c.accessorKey || c.id}
                   className="overflow-hidden text-ellipsis whitespace-nowrap"
-                  style={{ textAlign: c.align || 'left', maxWidth: c.width || 'auto' }}>
+                  style={{
+                    textAlign: c.align || 'left',
+                    maxWidth: c.width || 'auto',
+                  }}>
                   {cellValue}
                 </TableCell>
               )

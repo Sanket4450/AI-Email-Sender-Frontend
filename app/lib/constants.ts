@@ -2,6 +2,11 @@ export const CONSTANTS = {
   // General
   APP_NAME: 'AI Email Sender',
   APP_DESCRIPTION: 'A personalized email sender with AI for better reach.',
+
+  SHOWING: 'Showing',
+  ENTRIES: 'Entries',
+  OF: 'of',
+  TO: 'to',
 }
 
 export const REQ_METHODS = {

@@ -41,7 +41,7 @@ export const ActionDropdown = ({ onEdit, onDelete }: ActionDropdownProps) => {
       {/* Content: Dropdown menu */}
       <DropdownMenuContent
         align="end"
-        className="w-48">
+        className="w-28">
         {COMMON_DATA_ACTIONS.map((a) => (
           <DropdownMenuItem
             onClick={() => handleActionClick(a)}

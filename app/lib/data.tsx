@@ -11,11 +11,11 @@ export const COMMON_DATA_ACTIONS: CommonDataActionsType[] = [
   {
     value: NAMES.EDIT,
     label: LABELS.EDIT,
-    icon: <Edit />,
+    icon: <Edit color="green" />,
   },
   {
     value: NAMES.DELETE,
     label: LABELS.DELETE,
-    icon: <Trash />,
+    icon: <Trash color="red" />,
   },
 ]

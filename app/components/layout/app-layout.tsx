@@ -14,10 +14,10 @@ interface AppLayoutProps {
 export default function AppLayout({ children }: AppLayoutProps) {
   return (
     <ModalProvider>
-      <div className="h-[100svh] relative overflow-hidden">
+      <div className="h-[100svh] relative flex flex-col overflow-hidden">
         <Header />
 
-        <div className="h-full w-full flex">
+        <div className="flex-1 min-h-0 w-full flex">
           <Sidebar />
 
           <main className="h-full flex-1 min-w-0 overflow-y-auto">

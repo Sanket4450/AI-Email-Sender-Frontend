@@ -4,22 +4,24 @@ import {
   useLoaderData,
   useNavigate,
 } from '@remix-run/react'
-import { Input } from '~/components/ui/input'
 import { Button } from '~/components/ui/button'
-import { Pagination } from '~/components/ui/pagination'
 import { fetchCompanies } from '~/api/companies'
 import { DataTable } from '~/components/shared/table/data-table'
 import { ColumnDef } from '~/types/common'
 import { ActionDropdown } from '~/components/shared/table/action-dropdown'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ModalType, useModal } from '~/context/modal-context'
 import { Company } from '~/types/company'
 import { LABELS, NAMES, PLACEHOLDERS } from '~/lib/form'
 import { formatDate } from '~/lib/utils'
 import { SearchField } from '~/components/shared/form/search-field'
 import { useDebounce } from '~/hooks/use-debounce'
+import { Separator } from '~/components/ui/separator'
+import { TableFooter } from '~/components/ui/table'
+import { TableFooterSection } from '~/components/shared/table/table-footer-section'
 import { VALUES } from '~/lib/values'
-import { useMount } from '~/hooks/use-mount'
+import { PageTitle } from '~/components/layout/page-title'
+import { TableHeaderSection } from '~/components/shared/table/table-header-section'
 
 interface CompaniesRequest {
   search: string
@@ -55,13 +57,14 @@ export const shouldRevalidate: ShouldRevalidateFunction = () => {
 export default function CompaniesPage() {
   const loaderData = useLoaderData<typeof loader>()
 
+  const fetcher = useFetcher<CompaniesResponse>()
+
+  // Global States
   const { openModal, isModalOpen } = useModal()
 
   // Local States
   const [page, setPage] = useState(1)
   const [searchText, setSearchText] = useState('')
-
-  const fetcher = useFetcher<CompaniesResponse>()
 
   const navigate = useNavigate()
 
@@ -73,8 +76,6 @@ export default function CompaniesPage() {
     }
     return loaderData
   }, [fetcher.data, loaderData])
-
-  const totalPages = Math.ceil(count / VALUES.COMPANIES_PAGE_SIZE)
 
   useEffect(() => {
     fetcher.submit(
@@ -122,11 +123,11 @@ export default function CompaniesPage() {
   )
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">{LABELS.COMPANIES}</h1>
-
+    <div className="h-full p-4">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
+      <PageTitle title={LABELS.COMPANIES} />
+
+      <TableHeaderSection>
         <SearchField
           name={NAMES.SEARCH_COMPANIES}
           placeholder={PLACEHOLDERS.SEARCH_COMPANIES}
@@ -134,12 +135,10 @@ export default function CompaniesPage() {
           onChange={setSearchText}
         />
 
-        <div>
-          <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            {LABELS.ADD_NEW}
-          </Button>
-        </div>
-      </div>
+        <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          {LABELS.ADD_NEW}
+        </Button>
+      </TableHeaderSection>
 
       {/* Table */}
       <DataTable
@@ -147,8 +146,15 @@ export default function CompaniesPage() {
         data={companies}
       />
 
-      {/* Pagination */}
-      <Pagination />
+      <Separator />
+
+      <TableFooterSection
+        page={page}
+        setPage={setPage}
+        pageSize={VALUES.COMPANIES_PAGE_SIZE}
+        dataCount={companies.length}
+        totalCount={count}
+      />
     </div>
   )
 }

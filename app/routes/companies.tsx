@@ -1,4 +1,9 @@
-import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react'
+import {
+  ShouldRevalidateFunction,
+  useFetcher,
+  useLoaderData,
+  useNavigate,
+} from '@remix-run/react'
 import { Input } from '~/components/ui/input'
 import { Button } from '~/components/ui/button'
 import { Pagination } from '~/components/ui/pagination'
@@ -6,7 +11,7 @@ import { fetchCompanies } from '~/api/companies'
 import { DataTable } from '~/components/shared/table/data-table'
 import { ColumnDef } from '~/types/common'
 import { ActionDropdown } from '~/components/shared/table/action-dropdown'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ModalType, useModal } from '~/context/modal-context'
 import { Company } from '~/types/company'
 import { LABELS, NAMES, PLACEHOLDERS } from '~/lib/form'
@@ -14,20 +19,26 @@ import { formatDate } from '~/lib/utils'
 import { SearchField } from '~/components/shared/form/search-field'
 import { useDebounce } from '~/hooks/use-debounce'
 import { VALUES } from '~/lib/values'
+import { useMount } from '~/hooks/use-mount'
+
+interface CompaniesRequest {
+  search: string
+  page: number
+}
 
 interface CompaniesResponse {
   count: number
   data: Company[]
 }
 
-export async function loader({
-  request,
-}: {
-  request: Request
-}): Promise<CompaniesResponse> {
-  const url = new URL(request.url)
-  const search = url.searchParams.get('search') || ''
-  const page = Number(url.searchParams.get('page')) || 1
+export async function loader(): Promise<CompaniesResponse> {
+  const { count, data } = await fetchCompanies({ search: '', page: 1 })
+
+  return { count, data }
+}
+
+export async function action({ request }: { request: Request }) {
+  const { search, page }: CompaniesRequest = await request.json()
 
   const { count, data } = await fetchCompanies({
     search,
@@ -37,8 +48,12 @@ export async function loader({
   return { count, data }
 }
 
+export const shouldRevalidate: ShouldRevalidateFunction = () => {
+  return false
+}
+
 export default function CompaniesPage() {
-  const { data: companies, count } = useLoaderData<typeof loader>()
+  const loaderData = useLoaderData<typeof loader>()
 
   const { openModal, isModalOpen } = useModal()
 
@@ -46,27 +61,27 @@ export default function CompaniesPage() {
   const [page, setPage] = useState(1)
   const [searchText, setSearchText] = useState('')
 
-  const totalPages = Math.ceil(count / VALUES.COMPANIES_PAGE_SIZE)
-
-  const fetcher = useFetcher()
+  const fetcher = useFetcher<CompaniesResponse>()
 
   const navigate = useNavigate()
 
   const { search } = useDebounce(searchText)
 
-  useEffect(() => {
-    fetcher.submit({ search, page })
-  }, [search])
-
-  useEffect(() => {
-    console.log(companies, 'companies change')
-  }, [companies])
-
-  useEffect(() => {
+  const { data: companies, count }: CompaniesResponse = useMemo(() => {
     if (fetcher.data) {
-      console.log('data comes', fetcher.data)
+      return fetcher.data
     }
-  }, [fetcher.data])
+    return loaderData
+  }, [fetcher.data, loaderData])
+
+  const totalPages = Math.ceil(count / VALUES.COMPANIES_PAGE_SIZE)
+
+  useEffect(() => {
+    fetcher.submit(
+      { search, page },
+      { method: 'POST', encType: 'application/json' }
+    )
+  }, [search])
 
   const navigateToEditCompany = useCallback(
     (id: string) => {

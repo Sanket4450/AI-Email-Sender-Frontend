@@ -5,6 +5,6 @@ export interface Company {
   title: string
   description: string
   location: string
-  createdAt: Date
+  createdAt: string
   tags: Tag[]
 }

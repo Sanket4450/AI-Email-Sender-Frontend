@@ -12,4 +12,6 @@ export interface ColumnDef<T> {
   accessorKey?: string
   header?: React.ReactNode
   cell?: ({ row }: { row: T }) => React.ReactNode
+  align?: 'left' | 'center' | 'right',
+  width?: number
 }

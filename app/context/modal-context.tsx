@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react'
 
-enum ModalType {
+export enum ModalType {
   deleteCompany = 'delete-company',
   deleteContact = 'delete-contact',
   deleteDraft = 'delete-draft',
@@ -13,7 +13,6 @@ interface ModalState {
 }
 
 interface ModalContextType {
-  modals: ModalState[]
   openModal: (type: ModalType, data: Record<string, unknown>) => void
   closeModal: (type: ModalType) => void
   isModalOpen: (type: ModalType) => boolean
@@ -48,8 +47,7 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <ModalContext.Provider
-      value={{ modals, openModal, closeModal, isModalOpen }}>
+    <ModalContext.Provider value={{ openModal, closeModal, isModalOpen }}>
       {children}
     </ModalContext.Provider>
   )

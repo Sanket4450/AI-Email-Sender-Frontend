@@ -1,5 +1,36 @@
-export const NAMES = { EDIT: 'edit', DELETE: 'delete' }
+export const NAMES = {
+  // Actions
+  EDIT: 'edit',
+  DELETE: 'delete',
 
-export const LABELS = { EDIT: 'Edit', DELETE: 'Delete' }
+  SEARCH: 'search',
+  SEARCH_COMPANIES: 'search-companies',
+  SEARCH_CONTACTS: 'search-contacts',
+  SEARCH_EMAILS: 'search-emails',
+  SEARCH_DRAFTS: 'search-drafts',
+  SEARCH_SCHEDULED_EMAILS: 'search-scheduled-emails',
+  SEARCH_SENDERS: 'search-senders',
+}
 
-export const PLACEHOLDERS = {}
+export const LABELS = {
+  // Actions
+  EDIT: 'Edit',
+  DELETE: 'Delete',
+  ADD_NEW: '+ Add New',
+
+  COMPANIES: 'Companies',
+  CONTACTS: 'Contacts',
+  EMAILS: 'Emails',
+  SCHEDULED_EMAILS: 'Scheduled Emails',
+  DRAFTS: 'Drafts',
+}
+
+export const PLACEHOLDERS = {
+  SEARCH: 'Search...',
+  SEARCH_COMPANIES: 'Search Companies...',
+  SEARCH_CONTACTS: 'Search Contacts...',
+  SEARCH_EMAILS: 'Search Emails...',
+  SEARCH_DRAFTS: 'Search Drafts...',
+  SEARCH_SCHEDULED_EMAILS: 'Search Scheduled Emails...',
+  SEARCH_SENDERS: 'Search Senders...',
+}

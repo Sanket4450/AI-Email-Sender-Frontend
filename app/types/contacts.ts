@@ -1,4 +1,4 @@
-import { Company } from './Company'
+import { Company } from './company'
 import { Tag } from './tag'
 
 export interface Contact {

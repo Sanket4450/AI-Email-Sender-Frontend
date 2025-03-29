@@ -14,23 +14,44 @@ interface CompaniesTableProps<T> {
 }
 
 export const DataTable = <T,>({ columns, data }: CompaniesTableProps<T>) => {
+  
+      
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[100px]">Invoice</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Method</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
+          {columns.map((c) => (
+            <TableHead
+              key={c.accessorKey || c.id}
+              className="">
+              {c.header}
+            </TableHead>
+          ))}
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow>
-          <TableCell className="font-medium">INV001</TableCell>
-          <TableCell>Paid</TableCell>
-          <TableCell>Credit Card</TableCell>
-          <TableCell className="text-right">$250.00</TableCell>
-        </TableRow>
+        {data.map((row, idx) => (
+          <TableRow
+            key={idx}
+            className="">
+            {columns.map((c) => {
+              const cellValue = c.cell
+                ? c.cell({ row })
+                : c.accessorKey
+                ? (row as Record<string, any>)[c.accessorKey]
+                : null
+
+              return (
+                <TableCell
+                  key={c.accessorKey || c.id}
+                  className="overflow-hidden text-ellipsis whitespace-nowrap"
+                  style={{ textAlign: c.align || 'left', maxWidth: c.width || 'auto' }}>
+                  {cellValue}
+                </TableCell>
+              )
+            })}
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
   )

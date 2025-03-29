@@ -7,6 +7,12 @@ export const CONSTANTS = {
   ENTRIES: 'Entries',
   OF: 'of',
   TO: 'to',
+  LIGHT: 'Light',
+  DARK: 'Dark',
+  OPEN_RATE: 'Open Rate',
+  CLICK_RATE: 'Click Rate',
+  REPLY_RATE: 'Reply Rate',
+  BOUNCE_RATE: 'Bounce Rate',
 }
 
 export const REQ_METHODS = {

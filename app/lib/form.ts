@@ -17,6 +17,10 @@ export const LABELS = {
   EDIT: 'Edit',
   DELETE: 'Delete',
   ADD_NEW: '+ Add New',
+  CANCEL: 'Cancel',
+  SAVE: 'Save',
+  SEND: 'Send',
+  SEND_NOW: 'Send Now',
 
   COMPANIES: 'Companies',
   CONTACTS: 'Contacts',

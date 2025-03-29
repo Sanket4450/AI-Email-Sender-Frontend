@@ -17,3 +17,12 @@ export function normalizeString(str: string) {
 export function normalizeCredential(str: string) {
   return str.replace(/\s+/g, '').toLowerCase()
 }
+
+export async function safeExecute(fn: () => Promise<void>) {
+  try {
+    await fn()
+  } catch (error: any) {
+    console.error(error.message)
+    return error
+  }
+}

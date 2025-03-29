@@ -13,15 +13,15 @@ const navItems = [
 
 export default function Sidebar() {
   return (
-    <div className="h-full bg-gray-50 border-r border-gray-200 p-4" style={{ width: VALUES.SIDEBAR_WIDTH }}>
+    <div className="h-full border-r border-border p-4" style={{ width: VALUES.SIDEBAR_WIDTH }}>
       <nav className="space-y-2">
         {navItems.map((item) => (
           <NavLink
             key={item.name}
             to={item.to}
             className={({ isActive }) =>
-              `flex items-center p-2 rounded-lg text-gray-700 hover:bg-gray-100 ${
-                isActive ? 'bg-gray-100 font-semibold' : ''
+              `flex items-center p-2 rounded-lg text-foreground hover:bg-muted ${
+                isActive ? 'bg-muted font-semibold' : ''
               }`
             }>
             <item.icon className="h-5 w-5 mr-3" />

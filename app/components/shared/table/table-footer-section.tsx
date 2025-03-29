@@ -27,7 +27,7 @@ export const TableFooterSection = ({
 
   return (
     <section className="flex justify-between items-center pt-2 px-3">
-      <p className="flex-1 text-[13px] text-gray-500">
+      <p className="flex-1 text-[13px] text-muted-foreground">
         {CONSTANTS.SHOWING} {startIndex} {CONSTANTS.TO} {endIndex}{' '}
         {CONSTANTS.OF} {totalCount} {CONSTANTS.ENTRIES.toLowerCase()}
       </p>

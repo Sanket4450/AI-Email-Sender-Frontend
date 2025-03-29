@@ -2,49 +2,41 @@ import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Badge } from '~/components/ui/badge'
 import { Progress } from '~/components/ui/progress'
 import { Avatar, AvatarFallback } from '~/components/ui/avatar'
-import { Mail, MousePointer, Reply, AlertTriangle } from 'lucide-react'
+import {
+  Mail,
+  MousePointer,
+  Reply,
+  AlertTriangle,
+  Triangle,
+} from 'lucide-react'
+import { DataCard } from '~/components/dashboard/data-card'
+import { CONSTANTS } from '~/lib/constants'
 
 export default function Dashboard() {
   return (
-    <div className="flex-1 p-6 bg-gray-50 overflow-auto">
+    <div className="flex-1 p-6 overflow-auto">
       {/* Metrics Section */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-medium">Open Rate</CardTitle>
-            <Mail className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">68.5%</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-medium">Click Rate</CardTitle>
-            <MousePointer className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">42.3%</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-medium">Reply Rate</CardTitle>
-            <Reply className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">28.1%</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-medium">Bounce Rate</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">2.4%</div>
-          </CardContent>
-        </Card>
+        <DataCard
+          title={CONSTANTS.OPEN_RATE}
+          value="68.5%"
+          Icon={Mail}
+        />
+        <DataCard
+          title={CONSTANTS.CLICK_RATE}
+          value="42.3%"
+          Icon={MousePointer}
+        />
+        <DataCard
+          title={CONSTANTS.REPLY_RATE}
+          value="28.1%"
+          Icon={Reply}
+        />
+        <DataCard
+          title={CONSTANTS.BOUNCE_RATE}
+          value="2.4%"
+          Icon={Triangle}
+        />
       </div>
 
       {/* Recent Activity Section */}

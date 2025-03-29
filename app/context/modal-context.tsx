@@ -1,11 +1,10 @@
 import React, { createContext, useContext, useState } from 'react'
 
-export enum ModalType {
-  deleteCompany = 'delete-company',
-  deleteContact = 'delete-contact',
-  deleteDraft = 'delete-draft',
-  deleteScheduledEmail = 'delete-scheduled-email',
-}
+export type ModalType =
+  | 'delete-company'
+  | 'delete-contact'
+  | 'delete-draft'
+  | 'delete-scheduled-email'
 
 interface ModalState {
   type: ModalType // Type of modal (e.g., "edit-company", "delete-contact")
@@ -16,6 +15,7 @@ interface ModalContextType {
   openModal: (type: ModalType, data: Record<string, unknown>) => void
   closeModal: (type: ModalType) => void
   isModalOpen: (type: ModalType) => boolean
+  getModalData: (type: ModalType) => Record<string, unknown> | undefined
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined)
@@ -46,8 +46,15 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
     return modals.some((modal) => modal.type === type)
   }
 
+  // Get data associated with a specific modal
+  const getModalData = (type: ModalType) => {
+    const modal = modals.find((modal) => modal.type === type)
+    return modal ? modal.data : undefined
+  }
+
   return (
-    <ModalContext.Provider value={{ openModal, closeModal, isModalOpen }}>
+    <ModalContext.Provider
+      value={{ openModal, closeModal, isModalOpen, getModalData }}>
       {children}
     </ModalContext.Provider>
   )

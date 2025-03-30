@@ -32,12 +32,9 @@ export async function apiCall({
   const data = await response.json()
 
   if (!data?.success) {
-    console.log(`Error calling API: ${data?.message}`)
+    console.log(`API Error: ${data?.message}`)
 
-    throw Response.json(
-      { message: data?.message || ERROR_MSG.INTERNAL_SERVER_ERROR },
-      { status: data?.statusCode || 500 }
-    )
+    throw new Error(data?.message || ERROR_MSG.INTERNAL_SERVER_ERROR)
   }
 
   return data

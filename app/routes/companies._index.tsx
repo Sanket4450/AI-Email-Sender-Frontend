@@ -3,6 +3,7 @@ import {
   useFetcher,
   useLoaderData,
   useNavigate,
+  useSearchParams,
 } from '@remix-run/react'
 import { Button } from '~/components/ui/button'
 import { deleteCompany, fetchCompanies } from '~/api/companies'
@@ -11,9 +12,9 @@ import { ColumnDef } from '~/types/common'
 import { ActionDropdown } from '~/components/shared/table/action-dropdown'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useModal } from '~/context/modal-context'
-import { Company, CompanyAction } from '~/types/company'
+import { Company, ResourceAction } from '~/types/company'
 import { LABELS, NAMES, PLACEHOLDERS } from '~/lib/form'
-import { formatDate } from '~/lib/utils'
+import { formatDate, formatStringArray, safeExecute } from '~/lib/utils'
 import { SearchField } from '~/components/shared/form/search-field'
 import { useDebounce } from '~/hooks/use-debounce'
 import { Separator } from '~/components/ui/separator'
@@ -22,9 +23,13 @@ import { VALUES } from '~/lib/values'
 import { PageTitle } from '~/components/layout/page-title'
 import { TableHeaderSection } from '~/components/shared/table/table-header-section'
 import { DeleteCompanyModal } from '~/components/companies/delete-company-modal'
+import { toast } from 'sonner'
+import { SUCCESS_MSG } from '~/lib/messages'
+import { LoaderFunctionArgs } from '@remix-run/node'
+import { CONSTANTS } from '~/lib/constants'
 
 interface CompaniesRequest {
-  action: CompanyAction
+  action: ResourceAction
   search: string
   page: number
   id: string
@@ -35,13 +40,31 @@ interface CompaniesResponse {
   data: Company[]
 }
 
-export async function loader(): Promise<CompaniesResponse> {
-  const { count, data } = await fetchCompanies({ search: '', page: 1 })
+interface CompaniesActionResponse extends CompaniesResponse {
+  action: ResourceAction
+  error?: string
+}
+
+export async function loader({
+  request,
+}: LoaderFunctionArgs): Promise<CompaniesResponse> {
+  const url = new URL(request.url)
+
+  const search = url.searchParams.get(VALUES.SEARCH_QUERY_PARAM) || ''
+  const page = parseInt(
+    url.searchParams.get(VALUES.PAGE_QUERY_PARAM) || '1',
+    10
+  )
+  const { count, data } = await fetchCompanies({ search, page })
 
   return { count, data }
 }
 
-export async function action({ request }: { request: Request }) {
+export async function action({
+  request,
+}: {
+  request: Request
+}): Promise<CompaniesActionResponse | null> {
   const { action, search, page, id }: CompaniesRequest = await request.json()
 
   const fetchData = async () => {
@@ -54,12 +77,20 @@ export async function action({ request }: { request: Request }) {
   }
 
   switch (action) {
-    case CompanyAction.REFETCH:
-      return fetchData()
+    case ResourceAction.COMPANIES_REFETCH:
+      return {
+        action: ResourceAction.COMPANIES_REFETCH,
+        ...(await fetchData()),
+      }
 
-    case CompanyAction.DELETE:
-      await deleteCompany(id)
-      return fetchData()
+    case ResourceAction.DELETE_COMPANY:
+      return await safeExecute(async () => {
+        await deleteCompany(id)
+        return { action: ResourceAction.DELETE_COMPANY, ...(await fetchData()) }
+      })
+
+    default:
+      return null
   }
 }
 
@@ -70,32 +101,92 @@ export const shouldRevalidate: ShouldRevalidateFunction = () => {
 export default function CompaniesPage() {
   const loaderData = useLoaderData<typeof loader>()
 
-  const fetcher = useFetcher<CompaniesResponse>()
+  const fetcher = useFetcher<CompaniesActionResponse>()
+
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const searchFromUrl = searchParams.get(VALUES.SEARCH_QUERY_PARAM) || ''
+  const pageFromUrl = parseInt(
+    searchParams.get(VALUES.PAGE_QUERY_PARAM) || '1',
+    10
+  )
 
   // Global States
-  const { openModal } = useModal()
+  const { openModal, closeModal } = useModal()
 
   // Local States
-  const [page, setPage] = useState(1)
-  const [searchText, setSearchText] = useState('')
+  const [companies, setCompanies] = useState<Company[]>([])
+  const [totalCount, setTotalCount] = useState(0)
+  const [page, setPage] = useState(pageFromUrl)
+  const [searchText, setSearchText] = useState(searchFromUrl)
 
   const navigate = useNavigate()
 
   const { search } = useDebounce(searchText)
 
-  const { data: companies, count }: CompaniesResponse = useMemo(() => {
-    if (fetcher.data) {
-      return fetcher.data
+  useEffect(() => {
+    setCompanies(loaderData.data)
+    setTotalCount(loaderData.count)
+  }, [loaderData])
+
+  useEffect(() => {
+    if (fetcher.data && !fetcher.data?.error) {
+      setCompanies(fetcher.data.data)
+      setTotalCount(fetcher.data.count)
     }
-    return loaderData
-  }, [fetcher.data, loaderData])
+  }, [fetcher.data])
+
+  useEffect(() => {
+    console.log('search changed')
+    const params = new URLSearchParams()
+    if (search) params.set(VALUES.SEARCH_QUERY_PARAM, search)
+    setSearchParams(params)
+    // setPage(1)
+  }, [search, page])
+
+  useEffect(() => {
+    const params = new URLSearchParams()
+    params.set(VALUES.PAGE_QUERY_PARAM, page.toString())
+    setSearchParams(params)
+  }, [page])
+
+  useEffect(() => {
+    if (fetcher.state === 'idle' && fetcher.data) {
+      if (fetcher.data.error) {
+        toast.error(fetcher.data.error)
+      } else if (fetcher.data.action) {
+        const { action } = fetcher.data
+
+        switch (action) {
+          case ResourceAction.DELETE_COMPANY:
+            toast.success(SUCCESS_MSG.COMPANY_DELETED)
+            closeModal('delete-company')
+            break
+
+          default:
+            break
+        }
+      }
+    }
+  }, [fetcher.state, fetcher.data])
 
   useEffect(() => {
     fetcher.submit(
-      { action: CompanyAction.REFETCH, search, page },
+      { action: ResourceAction.COMPANIES_REFETCH, search, page: 1 },
       { method: 'POST', encType: 'application/json' }
     )
   }, [search])
+
+  useEffect(() => {
+    fetcher.submit(
+      { action: ResourceAction.COMPANIES_REFETCH, search, page },
+      { method: 'POST', encType: 'application/json' }
+    )
+  }, [page])
+
+  const navigateToAddCompany = useCallback(() => {
+    navigate('/companies/add')
+  }, [navigate])
 
   const navigateToEditCompany = useCallback(
     (id: string) => {
@@ -114,7 +205,7 @@ export default function CompaniesPage() {
   const handleDeleteCompany = useCallback(
     (companyId: string) => {
       fetcher.submit(
-        { action: CompanyAction.DELETE, id: companyId },
+        { action: ResourceAction.DELETE_COMPANY, id: companyId },
         {
           method: 'DELETE',
           encType: 'application/json',
@@ -130,6 +221,12 @@ export default function CompaniesPage() {
       { accessorKey: 'title', header: 'Company' },
       { accessorKey: 'description', header: 'Description', width: 200 },
       { accessorKey: 'location', header: 'Location' },
+      {
+        id: 'tags',
+        header: 'Tags',
+        cell: ({ row }) =>
+          formatStringArray(row.tags, NAMES.TITLE) || CONSTANTS.NA,
+      },
       {
         id: 'createdAt',
         header: 'Created At',
@@ -150,7 +247,7 @@ export default function CompaniesPage() {
 
   return (
     <>
-      <div className="h-full p-4">
+      <div className="h-full flex flex-col">
         {/* Header */}
         <PageTitle title={LABELS.COMPANIES} />
 
@@ -163,7 +260,9 @@ export default function CompaniesPage() {
             onChange={setSearchText}
           />
 
-          <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <Button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={navigateToAddCompany}>
             {LABELS.ADD_NEW}
           </Button>
         </TableHeaderSection>
@@ -182,7 +281,7 @@ export default function CompaniesPage() {
           setPage={setPage}
           pageSize={VALUES.COMPANIES_PAGE_SIZE}
           dataCount={companies.length}
-          totalCount={count}
+          totalCount={totalCount}
         />
       </div>
 

@@ -33,7 +33,7 @@ export const ActionDropdown = ({ onEdit, onDelete }: ActionDropdownProps) => {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          size="icon">
+          className="w-8 h-8">
           <MoreHorizontal />
         </Button>
       </DropdownMenuTrigger>

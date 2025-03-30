@@ -3,19 +3,19 @@ import { apiCall } from '.'
 import { VALUES } from '~/lib/values'
 import { DEFAULT_DATA_RESPONSE, REQ_METHODS } from '~/lib/constants'
 
-interface FetchCompanies extends Search, Pagination {}
+interface FetchTags extends Search, Pagination {}
 
-export async function fetchCompanies({ search, page = 1 }: FetchCompanies) {
+export async function fetchTags({ search, page = 1 }: FetchTags) {
   try {
-    const body = {
+    const params = {
       ...(search && { search }),
       page: String(page),
-      limit: String(VALUES.COMPANIES_PAGE_SIZE),
+      limit: String(VALUES.TAGS_PAGE_SIZE),
     }
     const { result } = await apiCall({
-      url: 'companies/get',
-      method: REQ_METHODS.POST,
-      body,
+      url: 'tags',
+      method: REQ_METHODS.GET,
+      params,
     })
 
     return result
@@ -24,18 +24,9 @@ export async function fetchCompanies({ search, page = 1 }: FetchCompanies) {
   }
 }
 
-export async function fetchSingleCompany(id: string) {
+export async function addTag(data: any) {
   const { result } = await apiCall({
-    url: `companies/${id}'`,
-    method: REQ_METHODS.GET,
-  })
-
-  return result
-}
-
-export async function addCompany(data: any) {
-  const { result } = await apiCall({
-    url: `companies`,
+    url: `tags`,
     method: REQ_METHODS.POST,
     body: data,
   })
@@ -43,9 +34,9 @@ export async function addCompany(data: any) {
   return result
 }
 
-export async function updateCompany(id: string, data: any) {
+export async function updateTag(id: string, data: any) {
   const { result } = await apiCall({
-    url: `companies/${id}`,
+    url: `tags/${id}`,
     method: REQ_METHODS.PATCH,
     body: data,
   })
@@ -53,9 +44,9 @@ export async function updateCompany(id: string, data: any) {
   return result
 }
 
-export async function deleteCompany(id: string) {
+export async function deleteTag(id: string) {
   const { result } = await apiCall({
-    url: `companies/${id}`,
+    url: `tags/${id}`,
     method: REQ_METHODS.DELETE,
   })
 

@@ -1,12 +1,17 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import moment from 'moment'
+import { ERROR_MSG } from './messages'
+import { VALUES } from './values'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatDate(date: string | Date, format: string = 'DD-MM-YYYY') {
+export function formatDate(
+  date: string | Date,
+  format: string = VALUES.COMMON_DATE_FORMAT
+) {
   return moment(date).format(format)
 }
 
@@ -18,11 +23,15 @@ export function normalizeCredential(str: string) {
   return str.replace(/\s+/g, '').toLowerCase()
 }
 
-export async function safeExecute(fn: () => Promise<void>) {
+export async function safeExecute(fn: () => Promise<any>) {
   try {
-    await fn()
+    const result = await fn()
+    return result
   } catch (error: any) {
-    console.error(error.message)
-    return error
+    return { error: error.message || ERROR_MSG.SOMETHING_WENT_WRONG }
   }
+}
+
+export function formatStringArray<T>(data: T[], key: string) {
+  return data.map((d) => d[key as keyof T]).join(', ')
 }

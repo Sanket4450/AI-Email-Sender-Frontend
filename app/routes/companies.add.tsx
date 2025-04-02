@@ -9,7 +9,7 @@ import { useFetcher, useNavigate } from '@remix-run/react'
 import { ModifyCompany, ModifyCompanySchema } from '~/schemas/company'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
 import { MODIFY_COMPANY_FIELDS } from '~/lib/form-fields'
-import { INPUT_TYPES } from '~/lib/constants'
+import { CONSTANTS, INPUT_TYPES } from '~/lib/constants'
 import { CommonTextarea } from '~/components/shared/form/common-textarea'
 import { CommonTextField } from '~/components/shared/form/common-text-field'
 import { PageTitle } from '~/components/layout/page-title'
@@ -20,6 +20,7 @@ import { Filter, SelectOptionRecord } from '~/types/common'
 import { fetchTags } from '~/api/tags'
 import { Tag } from '~/types/tag'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
+import { SubmitBtn } from '~/components/shared/buttons'
 
 interface AddCompanyRequest extends Company, Filter {
   action: ResourceAction
@@ -151,6 +152,7 @@ export default function AddCompanyPage() {
       {/* Form */}
       <Form {...form}>
         <form
+          id={CONSTANTS.MODIFY_COMPANY_FORM}
           onSubmit={form.handleSubmit(handleSubmit)}
           className="space-y-8">
           <div className="space-y-4">
@@ -186,15 +188,15 @@ export default function AddCompanyPage() {
               readOnly={fetcher.state === 'loading'}
             />
           </div>
-
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            className="w-full">
-            {LABELS.ADD_COMPANY}
-          </Button>
         </form>
       </Form>
+
+      {/* Submit Button */}
+      <SubmitBtn
+        name={CONSTANTS.MODIFY_COMPANY_FORM}
+        child={LABELS.ADD_COMPANY}
+        className="w-full mt-10"
+      />
     </div>
   )
 }

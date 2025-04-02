@@ -1,3 +1,11 @@
+import { ResourceAction } from './company'
+
+export interface Response {
+  success: boolean
+  action?: ResourceAction
+  message: string
+}
+
 export interface Pagination {
   page?: number
   limit?: number

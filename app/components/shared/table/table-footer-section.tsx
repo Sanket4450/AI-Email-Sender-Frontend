@@ -5,7 +5,7 @@ import { VALUES } from '~/lib/values'
 
 interface CommonTableFooterProps {
   page: number
-  setPage: React.Dispatch<React.SetStateAction<number>>
+  onPageChange: (page: number) => void
   pageSize: number
   dataCount: number
   totalCount: number
@@ -13,7 +13,7 @@ interface CommonTableFooterProps {
 
 export const TableFooterSection = ({
   page,
-  setPage,
+  onPageChange,
   pageSize,
   dataCount,
   totalCount,
@@ -36,7 +36,7 @@ export const TableFooterSection = ({
       <CommonPagination
         currentPage={page}
         totalPages={totalPages}
-        onChange={setPage}
+        onChange={onPageChange}
       />
     </section>
   )

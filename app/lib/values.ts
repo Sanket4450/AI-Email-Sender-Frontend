@@ -3,6 +3,9 @@ export const VALUES = {
   COMMON_DATE_FORMAT: 'DD-MM-YYYY',
   SEARCH_QUERY_PARAM: 'q',
   PAGE_QUERY_PARAM: 'page',
+  INITIAL_PAGE: 1,
+  INITIAL_PAGE_PARAM: '1',
+  INITIAL_SEARCH: '',
 
   // Layout
   HEADER_HEIGHT: 60,

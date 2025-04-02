@@ -14,6 +14,16 @@ export const CONSTANTS = {
   CLICK_RATE: 'Click Rate',
   REPLY_RATE: 'Reply Rate',
   BOUNCE_RATE: 'Bounce Rate',
+  RESET: 'Reset',
+  SUBMIT: 'Submit',
+
+  // Form Names
+  MODIFY_COMPANY_FORM: 'Modify Company Form',
+  MODIFY_CONTACT_FORM: 'Modify Contact Form',
+  MODIFY_DRAFT_FORM: 'Modify Draft Form',
+  MODIFY_Email_FORM: 'Modify Email Form',
+  MODIFY_SENDER_FORM: 'Modify Sender Form',
+  
 }
 
 export const REQ_METHODS = {

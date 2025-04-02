@@ -1,14 +1,12 @@
 import {
-  ShouldRevalidateFunction,
   useFetcher,
   useLoaderData,
   useNavigate,
   useSearchParams,
 } from '@remix-run/react'
-import { Button } from '~/components/ui/button'
 import { deleteCompany, fetchCompanies } from '~/api/companies'
 import { DataTable } from '~/components/shared/table/data-table'
-import { ColumnDef } from '~/types/common'
+import { ColumnDef, Response } from '~/types/common'
 import { ActionDropdown } from '~/components/shared/table/action-dropdown'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useModal } from '~/context/modal-context'
@@ -27,6 +25,7 @@ import { toast } from 'sonner'
 import { SUCCESS_MSG } from '~/lib/messages'
 import { LoaderFunctionArgs } from '@remix-run/node'
 import { CONSTANTS } from '~/lib/constants'
+import { ActionBtn, CancelBtn } from '~/components/shared/buttons'
 
 interface CompaniesRequest {
   action: ResourceAction
@@ -38,11 +37,6 @@ interface CompaniesRequest {
 interface CompaniesResponse {
   count: number
   data: Company[]
-}
-
-interface CompaniesActionResponse extends CompaniesResponse {
-  action: ResourceAction
-  error?: string
 }
 
 export async function loader({
@@ -64,29 +58,18 @@ export async function action({
   request,
 }: {
   request: Request
-}): Promise<CompaniesActionResponse | null> {
-  const { action, search, page, id }: CompaniesRequest = await request.json()
-
-  const fetchData = async () => {
-    const { count, data } = await fetchCompanies({
-      search,
-      page,
-    })
-
-    return { count, data }
-  }
+}): Promise<Response | null> {
+  const { action, id }: CompaniesRequest = await request.json()
 
   switch (action) {
-    case ResourceAction.COMPANIES_REFETCH:
-      return {
-        action: ResourceAction.COMPANIES_REFETCH,
-        ...(await fetchData()),
-      }
-
     case ResourceAction.DELETE_COMPANY:
       return await safeExecute(async () => {
         await deleteCompany(id)
-        return { action: ResourceAction.DELETE_COMPANY, ...(await fetchData()) }
+        return {
+          success: true,
+          action: ResourceAction.DELETE_COMPANY,
+          message: SUCCESS_MSG.COMPANY_DELETED,
+        }
       })
 
     default:
@@ -94,21 +77,17 @@ export async function action({
   }
 }
 
-export const shouldRevalidate: ShouldRevalidateFunction = () => {
-  return false
-}
-
 export default function CompaniesPage() {
   const loaderData = useLoaderData<typeof loader>()
 
-  const fetcher = useFetcher<CompaniesActionResponse>()
+  const fetcher = useFetcher<Response>()
 
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const searchFromUrl = searchParams.get(VALUES.SEARCH_QUERY_PARAM) || ''
-  const pageFromUrl = parseInt(
-    searchParams.get(VALUES.PAGE_QUERY_PARAM) || '1',
-    10
+  const urlSearch =
+    searchParams.get(VALUES.SEARCH_QUERY_PARAM) || VALUES.INITIAL_SEARCH
+  const page = parseInt(
+    searchParams.get(VALUES.PAGE_QUERY_PARAM) || VALUES.INITIAL_PAGE_PARAM
   )
 
   // Global States
@@ -117,8 +96,7 @@ export default function CompaniesPage() {
   // Local States
   const [companies, setCompanies] = useState<Company[]>([])
   const [totalCount, setTotalCount] = useState(0)
-  const [page, setPage] = useState(pageFromUrl)
-  const [searchText, setSearchText] = useState(searchFromUrl)
+  const [searchText, setSearchText] = useState(urlSearch)
 
   const navigate = useNavigate()
 
@@ -130,36 +108,38 @@ export default function CompaniesPage() {
   }, [loaderData])
 
   useEffect(() => {
-    if (fetcher.data && !fetcher.data?.error) {
-      setCompanies(fetcher.data.data)
-      setTotalCount(fetcher.data.count)
+    const params = new URLSearchParams()
+
+    if (urlSearch !== search) {
+      params.set(VALUES.SEARCH_QUERY_PARAM, search)
+      params.set(VALUES.PAGE_QUERY_PARAM, VALUES.INITIAL_PAGE_PARAM)
+      setSearchParams(params)
     }
-  }, [fetcher.data])
+  }, [search, urlSearch])
 
-  useEffect(() => {
-    console.log('search changed')
+  const resetFilterState = useCallback(() => {
     const params = new URLSearchParams()
-    if (search) params.set(VALUES.SEARCH_QUERY_PARAM, search)
+    params.set(VALUES.SEARCH_QUERY_PARAM, VALUES.INITIAL_SEARCH)
+    params.set(VALUES.PAGE_QUERY_PARAM, VALUES.INITIAL_PAGE_PARAM)
     setSearchParams(params)
-    // setPage(1)
-  }, [search, page])
+  }, [])
 
-  useEffect(() => {
+  const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams()
-    params.set(VALUES.PAGE_QUERY_PARAM, page.toString())
+    params.set(VALUES.PAGE_QUERY_PARAM, newPage.toString())
     setSearchParams(params)
-  }, [page])
+  }
 
   useEffect(() => {
     if (fetcher.state === 'idle' && fetcher.data) {
-      if (fetcher.data.error) {
-        toast.error(fetcher.data.error)
+      if (fetcher.data.success === false) {
+        toast.error(fetcher.data.message)
       } else if (fetcher.data.action) {
         const { action } = fetcher.data
 
         switch (action) {
           case ResourceAction.DELETE_COMPANY:
-            toast.success(SUCCESS_MSG.COMPANY_DELETED)
+            toast.success(fetcher.data.message)
             closeModal('delete-company')
             break
 
@@ -169,20 +149,6 @@ export default function CompaniesPage() {
       }
     }
   }, [fetcher.state, fetcher.data])
-
-  useEffect(() => {
-    fetcher.submit(
-      { action: ResourceAction.COMPANIES_REFETCH, search, page: 1 },
-      { method: 'POST', encType: 'application/json' }
-    )
-  }, [search])
-
-  useEffect(() => {
-    fetcher.submit(
-      { action: ResourceAction.COMPANIES_REFETCH, search, page },
-      { method: 'POST', encType: 'application/json' }
-    )
-  }, [page])
 
   const navigateToAddCompany = useCallback(() => {
     navigate('/companies/add')
@@ -260,11 +226,17 @@ export default function CompaniesPage() {
             onChange={setSearchText}
           />
 
-          <Button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={navigateToAddCompany}>
-            {LABELS.ADD_NEW}
-          </Button>
+          <div className="flex items-center gap-3">
+            <CancelBtn
+              child={CONSTANTS.RESET}
+              onClick={resetFilterState}
+            />
+
+            <ActionBtn
+              child={LABELS.ADD_NEW}
+              onClick={navigateToAddCompany}
+            />
+          </div>
         </TableHeaderSection>
 
         {/* Table */}
@@ -278,7 +250,7 @@ export default function CompaniesPage() {
         {/* Table Footer */}
         <TableFooterSection
           page={page}
-          setPage={setPage}
+          onPageChange={handlePageChange}
           pageSize={VALUES.COMPANIES_PAGE_SIZE}
           dataCount={companies.length}
           totalCount={totalCount}

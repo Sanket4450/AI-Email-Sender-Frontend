@@ -7,7 +7,6 @@ import {
 import { Checkbox } from '~/components/ui/checkbox'
 import { cn } from '~/lib/utils'
 import { SelectOptionRecord } from '~/types/common'
-import { Button } from '~/components/ui/button'
 import { NoDataFound } from '../no-data-found'
 import { INFO_MSG } from '~/lib/messages'
 
@@ -58,7 +57,7 @@ export const CommonMultiSelectMenu = ({
                 .join(', ')
             ) : (
               // Display placeholder if no selection
-              <span className="text-gray-500">{placeholder}</span>
+              <span className="text-muted-foreground">{placeholder}</span>
             )}
           </button>
         </PopoverTrigger>

@@ -26,7 +26,7 @@ export async function fetchCompanies({ search, page = 1 }: FetchCompanies) {
 
 export async function fetchSingleCompany(id: string) {
   const { result } = await apiCall({
-    url: `companies/${id}'`,
+    url: `companies/${id}`,
     method: REQ_METHODS.GET,
   })
 

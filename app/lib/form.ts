@@ -34,6 +34,7 @@ export const LABELS = {
 
   EDIT_COMPANY: 'Edit Company',
   ADD_NEW_COMPANY: 'Add New Company',
+  UPDATE_COMPANY: 'Update Company',
   ADD_COMPANY: 'Add Company',
   EDIT_CONTACT: 'Edit Contact',
   ADD_NEW_CONTACT: 'Add New Contact',

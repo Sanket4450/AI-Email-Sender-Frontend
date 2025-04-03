@@ -38,6 +38,9 @@ export const SUCCESS_MSG = {
   // General
   THEME_TOGGLED: 'Theme toggled successfully',
 
+  // Fetch
+  TAGS_FETCHED: 'Tags fetched successfully',
+
   // Add
   COMPANY_ADDED: 'Company added successfully',
   CONTACT_ADDED: 'Contact added successfully',
@@ -45,12 +48,12 @@ export const SUCCESS_MSG = {
   SENDER_ADDED: 'Sender added successfully',
   SCHEDULED_EMAIL_ADDED: 'Scheduled email added successfully',
 
-  // Edit
-  COMPANY_EDITED: 'Company edited successfully',
-  CONTACT_EDITED: 'Contact edited successfully',
-  DRAFT_EDITED: 'Draft edited successfully',
-  SENDER_EDITED: 'Sender edited successfully',
-  SCHEDULED_EMAIL_EDITED: 'Scheduled email edited successfully',
+  // Update
+  COMPANY_UPDATED: 'Company updated successfully',
+  CONTACT_UPDATED: 'Contact updated successfully',
+  DRAFT_UPDATED: 'Draft updated successfully',
+  SENDER_UPDATED: 'Sender updated successfully',
+  SCHEDULED_EMAIL_UPDATED: 'Scheduled email updated successfully',
 
   // Delete
   COMPANY_DELETED: 'Company deleted successfully',

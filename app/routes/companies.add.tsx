@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { Form } from '~/components/ui/form'
-import { Button } from '~/components/ui/button'
 import { addCompany } from '~/api/companies'
 import { useFetcher, useNavigate } from '@remix-run/react'
 import { ModifyCompany, ModifyCompanySchema } from '~/schemas/company'
@@ -13,10 +12,15 @@ import { CONSTANTS, INPUT_TYPES } from '~/lib/constants'
 import { CommonTextarea } from '~/components/shared/form/common-textarea'
 import { CommonTextField } from '~/components/shared/form/common-text-field'
 import { PageTitle } from '~/components/layout/page-title'
-import { Company, ResourceAction } from '~/types/company'
+import { Company } from '~/types/company'
 import { safeExecute } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
-import { Filter, SelectOptionRecord } from '~/types/common'
+import {
+  Filter,
+  ResourceAction,
+  Response,
+  SelectOptionRecord,
+} from '~/types/common'
 import { fetchTags } from '~/api/tags'
 import { Tag } from '~/types/tag'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
@@ -26,20 +30,11 @@ interface AddCompanyRequest extends Company, Filter {
   action: ResourceAction
 }
 
-interface ActionResponse {
-  action: ResourceAction
-  error?: string
-  tagsResponse?: {
-    count: number
-    data: Tag[]
-  }
-}
-
 export async function action({
   request,
 }: {
   request: Request
-}): Promise<ActionResponse | null> {
+}): Promise<Response | null> {
   const { action, search, page, ...data }: AddCompanyRequest =
     await request.json()
 
@@ -55,14 +50,20 @@ export async function action({
   switch (action) {
     case ResourceAction.TAGS_REFETCH:
       return {
+        success: true,
         action: ResourceAction.TAGS_REFETCH,
-        tagsResponse: await fetchTagsData(),
+        message: SUCCESS_MSG.TAGS_FETCHED,
+        result: await fetchTagsData(),
       }
 
     case ResourceAction.ADD_COMPANY:
       return await safeExecute(async () => {
         await addCompany(data)
-        return { action: ResourceAction.ADD_COMPANY }
+        return {
+          success: true,
+          action: ResourceAction.ADD_COMPANY,
+          message: SUCCESS_MSG.COMPANY_ADDED,
+        }
       })
 
     default:
@@ -71,7 +72,7 @@ export async function action({
 }
 
 export default function AddCompanyPage() {
-  const fetcher = useFetcher<ActionResponse>()
+  const fetcher = useFetcher<Response>()
 
   // Local States
   const [tags, setTags] = useState<Tag[]>([])
@@ -88,22 +89,16 @@ export default function AddCompanyPage() {
   )
 
   useEffect(() => {
-    if (fetcher.data && !fetcher.data?.error) {
-      if (fetcher.data.tagsResponse) {
-        setTags(fetcher.data.tagsResponse.data)
-        setTotalCount(fetcher.data.tagsResponse.count)
-      }
-    }
-  }, [fetcher.data])
-
-  useEffect(() => {
-    if (fetcher.state === 'idle' && fetcher.data) {
-      if (fetcher.data.error) {
-        toast.error(fetcher.data.error)
-      } else if (fetcher.data.action) {
+    if (fetcher.data) {
+      if (fetcher.data.success) {
         const { action } = fetcher.data
 
         switch (action) {
+          case ResourceAction.TAGS_REFETCH:
+            setTags(fetcher.data.result.data)
+            setTotalCount(fetcher.data.result.count)
+            break
+
           case ResourceAction.ADD_COMPANY:
             toast.success(SUCCESS_MSG.COMPANY_ADDED)
             navigate(-1)
@@ -112,9 +107,11 @@ export default function AddCompanyPage() {
           default:
             break
         }
+      } else {
+        toast.error(fetcher.data.message)
       }
     }
-  }, [fetcher.state, fetcher.data])
+  }, [fetcher.data])
 
   useEffect(() => {
     fetcher.submit(
@@ -195,7 +192,7 @@ export default function AddCompanyPage() {
       <SubmitBtn
         name={CONSTANTS.MODIFY_COMPANY_FORM}
         child={LABELS.ADD_COMPANY}
-        className="w-full mt-10"
+        className="w-full mt-8"
       />
     </div>
   )

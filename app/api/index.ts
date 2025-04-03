@@ -1,7 +1,8 @@
+import axios from 'axios'
 import { REQ_METHODS } from '~/lib/constants'
 import { ERROR_MSG } from '~/lib/messages'
 
-const baseUrl = process.env.BACKEND_URL
+const baseURL = process.env.BACKEND_URL
 
 interface ApiCallProps {
   url: string
@@ -17,23 +18,22 @@ export async function apiCall({
   params = {},
   headers = {},
   body = {},
-}: ApiCallProps) {
-  const searchParams = new URLSearchParams(params).toString()
-
-  const response = await fetch(`${baseUrl}/api/${url}?${searchParams}`, {
+}: ApiCallProps): Promise<any> {
+  const response = await axios.request({
+    url: `${baseURL}/api/${url}`,
     method,
+    params,
     headers: {
       'Content-Type': 'application/json',
       ...headers,
     },
-    ...(method !== REQ_METHODS.GET && { body: JSON.stringify(body) }),
+    data: method !== REQ_METHODS.GET ? JSON.stringify(body) : undefined,
   })
 
-  const data = await response.json()
+  const data = response.data
 
   if (!data?.success) {
-    console.log(`API Error: ${data?.message}`)
-
+    console.error(`API Error: ${data?.message}`)
     throw new Error(data?.message || ERROR_MSG.INTERNAL_SERVER_ERROR)
   }
 

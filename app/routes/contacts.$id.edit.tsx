@@ -3,11 +3,11 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { Form } from '~/components/ui/form'
-import { addCompany, fetchSingleCompany, updateCompany } from '~/api/companies'
+import { fetchSingleContact, updateContact } from '~/api/contacts'
 import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react'
-import { ModifyCompany, ModifyCompanySchema } from '~/schemas/company'
+import { ModifyContact, ModifyContactSchema } from '~/schemas/contact'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
-import { MODIFY_COMPANY_FIELDS } from '~/lib/form-fields'
+import { MODIFY_CONTACT_FIELDS } from '~/lib/form-fields'
 import { CONSTANTS, INPUT_TYPES } from '~/lib/constants'
 import { CommonTextarea } from '~/components/shared/form/common-textarea'
 import { CommonTextField } from '~/components/shared/form/common-text-field'
@@ -25,15 +25,15 @@ import { Tag } from '~/types/tag'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
 import { SubmitBtn } from '~/components/shared/buttons'
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
-import { Company } from '~/types/company'
-import { ModifyCompanyFields } from '~/components/companies/modify-company-fields'
+import { Contact } from '~/types/contact'
+import { ModifyContactFields } from '~/components/contacts/modify-contact-fields'
 
-interface EditCompanyRequest extends Filter {
+interface EditContactRequest extends Filter {
   action: ResourceAction
 }
 
-export async function loader({ params }: LoaderFunctionArgs): Promise<Company> {
-  const result = await fetchSingleCompany(params.id as string)
+export async function loader({ params }: LoaderFunctionArgs): Promise<Contact> {
+  const result = await fetchSingleContact(params.id as string)
   return result
 }
 
@@ -41,7 +41,7 @@ export async function action({
   request,
   params,
 }: ActionFunctionArgs): Promise<Response | null> {
-  const { action, search, page, ...data }: EditCompanyRequest =
+  const { action, search, page, ...data }: EditContactRequest =
     await request.json()
 
   const fetchTagsData = async () => {
@@ -62,13 +62,13 @@ export async function action({
         result: await fetchTagsData(),
       }
 
-    case ResourceAction.EDIT_COMPANY:
+    case ResourceAction.EDIT_CONTACT:
       return await safeExecute(async () => {
-        await updateCompany(params.id as string, data)
+        await updateContact(params.id as string, data)
         return {
           success: true,
-          action: ResourceAction.EDIT_COMPANY,
-          message: SUCCESS_MSG.COMPANY_UPDATED,
+          action: ResourceAction.EDIT_CONTACT,
+          message: SUCCESS_MSG.CONTACT_UPDATED,
         }
       })
 
@@ -77,7 +77,7 @@ export async function action({
   }
 }
 
-export default function EditCompanyPage() {
+export default function EditContactPage() {
   const loaderData = useLoaderData<typeof loader>()
 
   const fetcher = useFetcher<Response>()
@@ -98,13 +98,16 @@ export default function EditCompanyPage() {
 
   useEffect(() => {
     if (loaderData) {
-      const company = loaderData
+      const contact = loaderData
 
-      setSelectedTags(company.tags.map((t) => t.id))
+      setSelectedTags(contact.tags.map((t) => t.id))
 
-      form.setValue('title', company.title)
-      form.setValue('description', company.description)
-      form.setValue('location', company.location)
+      form.setValue('name', contact.name)
+      form.setValue('position', contact.position)
+      form.setValue('email', contact.email)
+      if (contact.phone) form.setValue('phone', contact.phone)
+      if (contact.linkedInUrl) form.setValue('linkedInUrl', contact.linkedInUrl)
+      if (contact.location) form.setValue('location', contact.location)
     }
   }, [loaderData])
 
@@ -119,8 +122,8 @@ export default function EditCompanyPage() {
             setTotalCount(fetcher.data.result.count)
             break
 
-          case ResourceAction.EDIT_COMPANY:
-            toast.success(SUCCESS_MSG.COMPANY_UPDATED)
+          case ResourceAction.EDIT_CONTACT:
+            toast.success(SUCCESS_MSG.CONTACT_UPDATED)
             navigate(-1)
             break
 
@@ -140,19 +143,22 @@ export default function EditCompanyPage() {
     )
   }, [])
 
-  const form = useForm<ModifyCompany>({
-    resolver: zodResolver(ModifyCompanySchema),
+  const form = useForm<ModifyContact>({
+    resolver: zodResolver(ModifyContactSchema),
     defaultValues: {
-      title: '',
+      name: '',
+      position: '',
+      email: '',
+      phone: '',
       location: '',
-      description: '',
+      linkedInUrl: '',
     },
   })
 
-  const handleSubmit = (values: ModifyCompany) => {
+  const handleSubmit = (values: ModifyContact) => {
     fetcher.submit(
       {
-        action: ResourceAction.EDIT_COMPANY,
+        action: ResourceAction.EDIT_CONTACT,
         ...values,
         ...(selectedTags.length && { tags: selectedTags }),
       },
@@ -163,14 +169,14 @@ export default function EditCompanyPage() {
   return (
     <div className="container mx-auto max-w-2xl">
       {/* Header */}
-      <PageTitle title={LABELS.EDIT_COMPANY} />
+      <PageTitle title={LABELS.EDIT_CONTACT} />
 
       {/* Form */}
       <Form {...form}>
         <form
-          id={CONSTANTS.MODIFY_COMPANY_FORM}
+          id={CONSTANTS.MODIFY_CONTACT_FORM}
           onSubmit={form.handleSubmit(handleSubmit)}>
-          <ModifyCompanyFields
+          <ModifyContactFields
             control={form.control}
             furtherFields={
               <CommonMultiSelectMenu
@@ -188,7 +194,7 @@ export default function EditCompanyPage() {
 
       {/* Submit Button */}
       <SubmitBtn
-        name={CONSTANTS.MODIFY_COMPANY_FORM}
+        name={CONSTANTS.MODIFY_CONTACT_FORM}
         child={LABELS.SAVE}
         className="w-full mt-8"
       />

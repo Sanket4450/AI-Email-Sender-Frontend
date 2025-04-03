@@ -14,6 +14,11 @@ export const NAMES = {
   TITLE: 'title',
   DESCRIPTION: 'description',
   LOCATION: 'location',
+  NAME: 'name',
+  POSITION: 'position',
+  EMAIL: 'email',
+  PHONE: 'phone',
+  LINKEDIN_URL: 'linkedInUrl',
 }
 
 export const LABELS = {
@@ -32,18 +37,28 @@ export const LABELS = {
   SCHEDULED_EMAILS: 'Scheduled Emails',
   DRAFTS: 'Drafts',
 
-  EDIT_COMPANY: 'Edit Company',
   ADD_NEW_COMPANY: 'Add New Company',
-  UPDATE_COMPANY: 'Update Company',
-  ADD_COMPANY: 'Add Company',
-  EDIT_CONTACT: 'Edit Contact',
   ADD_NEW_CONTACT: 'Add New Contact',
-  EDIT_EMAIL: 'Edit Email',
   ADD_NEW_EMAIL: 'Add New Email',
-  EDIT_DRAFT: 'Edit Draft',
   ADD_NEW_DRAFT: 'Add New Draft',
-  EDIT_SENDER: 'Edit Sender',
   ADD_NEW_SENDER: 'Add New Sender',
+
+  ADD_COMPANY: 'Add Company',
+  ADD_CONTACT: 'Add Contact',
+  ADD_SENDER: 'Add Sender',
+  ADD_DRAFT: 'Add Draft',
+
+  EDIT_COMPANY: 'Edit Company',
+  EDIT_CONTACT: 'Edit Contact',
+  EDIT_EMAIL: 'Edit Email',
+  EDIT_DRAFT: 'Edit Draft',
+  EDIT_SENDER: 'Edit Sender',
+
+  UPDATE_COMPANY: 'Update Company',
+  UPDATE_CONTACT: 'Update Contact',
+  UPDATE_DRAFT: 'Update Draft',
+  UPDATE_SENDER: 'Update Sender',
+
   EDIT_TAG: 'Edit Tag',
   ADD_NEW_TAG: 'Add New Tag',
 
@@ -52,6 +67,12 @@ export const LABELS = {
   COMPANY_LOCATION: 'Company Location',
 
   TAGS: 'Tags',
+  CONTACT_NAME: 'Contact Name',
+  POSITION: 'Position',
+  EMAIL: 'Email',
+  PHONE: 'Phone',
+  LINKEDIN_URL: 'LinkedIn URL',
+  LOCATION: 'Location',
 }
 
 export const PLACEHOLDERS = {
@@ -68,4 +89,10 @@ export const PLACEHOLDERS = {
   COMPANY_LOCATION: 'Enter company location',
 
   TAGS: 'Select Tags',
+  CONTACT_NAME: 'Enter Contact Name',
+  POSITION: 'Enter Position',
+  EMAIL: 'Enter Email',
+  PHONE: 'Enter Phone',
+  LINKEDIN_URL: 'Enter LinkedIn URL',
+  LOCATION: 'Enter Location',
 }

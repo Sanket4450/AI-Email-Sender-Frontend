@@ -29,3 +29,43 @@ export const MODIFY_COMPANY_FIELDS: FormField[] = [
     type: INPUT_TYPES.TEXT,
   },
 ]
+
+
+export const MODIFY_CONTACT_FIELDS: FormField[] = [
+  {
+    name: NAMES.NAME,
+    label: LABELS.CONTACT_NAME,
+    placeholder: PLACEHOLDERS.CONTACT_NAME,
+    type: INPUT_TYPES.TEXT,
+  },
+  {
+    name: NAMES.POSITION,
+    label: LABELS.POSITION,
+    placeholder: PLACEHOLDERS.POSITION,
+    type: INPUT_TYPES.TEXT,
+  },
+  {
+    name: NAMES.EMAIL,
+    label: LABELS.EMAIL,
+    placeholder: PLACEHOLDERS.EMAIL,
+    type: INPUT_TYPES.EMAIL,
+  },
+  {
+    name: NAMES.PHONE,
+    label: LABELS.PHONE,
+    placeholder: PLACEHOLDERS.PHONE,
+    type: INPUT_TYPES.TEXT,
+  },
+  {
+    name: NAMES.LINKEDIN_URL,
+    label: LABELS.LINKEDIN_URL,
+    placeholder: PLACEHOLDERS.LINKEDIN_URL,
+    type: INPUT_TYPES.TEXT,
+  },
+  {
+    name: NAMES.LOCATION,
+    label: LABELS.LOCATION,
+    placeholder: PLACEHOLDERS.LOCATION,
+    type: INPUT_TYPES.TEXT,
+  },
+]

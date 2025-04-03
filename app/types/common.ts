@@ -60,7 +60,8 @@ export interface ColumnDef<T> {
   header?: React.ReactNode
   cell?: ({ row }: { row: T }) => React.ReactNode
   align?: 'left' | 'center' | 'right'
-  width?: number
+  minWidth?: number
+  maxWidth?: number
 }
 
 export interface SelectOptionRecord {

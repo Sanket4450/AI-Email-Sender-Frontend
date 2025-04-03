@@ -6,9 +6,10 @@ export interface Contact {
   name: string
   position: string
   email: string
+  phone?: string
   linkedInUrl?: string
   location?: string
-  createdAt: Date
+  createdAt: string
   company: Company
   tags: Tag[]
 }

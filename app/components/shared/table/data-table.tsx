@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from '../../ui/table'
+import { CONSTANTS } from '~/lib/constants'
 
 interface CompaniesTableProps<T> {
   columns: ColumnDef<T>[]
@@ -36,7 +37,7 @@ export const DataTable = <T,>({ columns, data }: CompaniesTableProps<T>) => {
               const cellValue = c.cell
                 ? c.cell({ row })
                 : c.accessorKey
-                ? (row as Record<string, any>)[c.accessorKey]
+                ? (row as Record<string, any>)[c.accessorKey] || CONSTANTS.NA
                 : null
 
               return (
@@ -45,7 +46,8 @@ export const DataTable = <T,>({ columns, data }: CompaniesTableProps<T>) => {
                   className="overflow-hidden text-ellipsis whitespace-nowrap"
                   style={{
                     textAlign: c.align || 'left',
-                    maxWidth: c.width || 'auto',
+                    minWidth: c.minWidth || 'auto',
+                    maxWidth: c.maxWidth || 'auto',
                   }}>
                   {cellValue}
                 </TableCell>

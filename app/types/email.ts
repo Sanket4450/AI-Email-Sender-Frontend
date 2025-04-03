@@ -1,4 +1,4 @@
-import { Contact } from "./contacts"
+import { Contact } from './contact'
 
 export interface Email {
   id: string

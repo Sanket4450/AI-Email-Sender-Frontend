@@ -25,6 +25,7 @@ import { fetchTags } from '~/api/tags'
 import { Tag } from '~/types/tag'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
 import { SubmitBtn } from '~/components/shared/buttons'
+import { ModifyCompanyFields } from '~/components/companies/modify-company-fields'
 
 interface AddCompanyRequest extends Company, Filter {
   action: ResourceAction
@@ -150,48 +151,27 @@ export default function AddCompanyPage() {
       <Form {...form}>
         <form
           id={CONSTANTS.MODIFY_COMPANY_FORM}
-          onSubmit={form.handleSubmit(handleSubmit)}
-          className="space-y-8">
-          <div className="space-y-4">
-            {MODIFY_COMPANY_FIELDS.map((f) =>
-              f.type === INPUT_TYPES.TEXTAREA ? (
-                <CommonTextarea
-                  key={f.name}
-                  name={f.name}
-                  label={f.label}
-                  placeholder={f.placeholder}
-                  readOnly={f.readOnly}
-                  control={form.control}
-                />
-              ) : (
-                <CommonTextField
-                  key={f.name}
-                  name={f.name}
-                  label={f.label}
-                  placeholder={f.placeholder}
-                  readOnly={f.readOnly}
-                  control={form.control}
-                />
-              )
-            )}
-
-            {/* Tags Field */}
-            <CommonMultiSelectMenu
-              data={tagOptions}
-              label={LABELS.TAGS}
-              placeholder={PLACEHOLDERS.TAGS}
-              values={selectedTags}
-              onChange={setSelectedTags}
-              readOnly={fetcher.state === 'loading'}
-            />
-          </div>
+          onSubmit={form.handleSubmit(handleSubmit)}>
+          <ModifyCompanyFields
+            control={form.control}
+            furtherFields={
+              <CommonMultiSelectMenu
+                data={tagOptions}
+                label={LABELS.TAGS}
+                placeholder={PLACEHOLDERS.TAGS}
+                values={selectedTags}
+                onChange={setSelectedTags}
+                readOnly={fetcher.state === 'loading'}
+              />
+            }
+          />
         </form>
       </Form>
 
       {/* Submit Button */}
       <SubmitBtn
         name={CONSTANTS.MODIFY_COMPANY_FORM}
-        child={LABELS.ADD_COMPANY}
+        child={LABELS.SAVE}
         className="w-full mt-8"
       />
     </div>

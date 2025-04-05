@@ -14,7 +14,7 @@ import { Company } from '~/types/company'
 import { LABELS, NAMES, PLACEHOLDERS } from '~/lib/form'
 import { formatDate, formatStringArray, safeExecute } from '~/lib/utils'
 import { SearchField } from '~/components/shared/form/search-field'
-import { useDebounce } from '~/hooks/use-debounce'
+import { useDebouncedSearch } from '~/hooks/use-debounced-search'
 import { Separator } from '~/components/ui/separator'
 import { TableFooterSection } from '~/components/shared/table/table-footer-section'
 import { VALUES } from '~/lib/values'
@@ -101,7 +101,7 @@ export default function CompaniesPage() {
 
   const navigate = useNavigate()
 
-  const { search } = useDebounce(searchText)
+  const { search } = useDebouncedSearch(searchText)
 
   useEffect(() => {
     setCompanies(loaderData.data)
@@ -109,27 +109,32 @@ export default function CompaniesPage() {
   }, [loaderData])
 
   useEffect(() => {
-    const params = new URLSearchParams()
-
     if (urlSearch !== search) {
-      params.set(VALUES.SEARCH_QUERY_PARAM, search)
-      params.set(VALUES.PAGE_QUERY_PARAM, VALUES.INITIAL_PAGE_PARAM)
-      setSearchParams(params)
+      setSearchParams((params) => {
+        params.set(VALUES.SEARCH_QUERY_PARAM, search)
+        params.set(VALUES.PAGE_QUERY_PARAM, VALUES.INITIAL_PAGE_PARAM)
+        return params
+      })
     }
-  }, [search, urlSearch])
+  }, [search, urlSearch, setSearchParams])
 
   const resetFilterState = useCallback(() => {
-    const params = new URLSearchParams()
-    params.set(VALUES.SEARCH_QUERY_PARAM, VALUES.INITIAL_SEARCH)
-    params.set(VALUES.PAGE_QUERY_PARAM, VALUES.INITIAL_PAGE_PARAM)
-    setSearchParams(params)
-  }, [])
+    setSearchParams((params) => {
+      params.set(VALUES.SEARCH_QUERY_PARAM, VALUES.INITIAL_SEARCH)
+      params.set(VALUES.PAGE_QUERY_PARAM, VALUES.INITIAL_PAGE_PARAM)
+      return params
+    })
+  }, [setSearchParams])
 
-  const handlePageChange = (newPage: number) => {
-    const params = new URLSearchParams()
-    params.set(VALUES.PAGE_QUERY_PARAM, newPage.toString())
-    setSearchParams(params)
-  }
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      setSearchParams((params) => {
+        params.set(VALUES.PAGE_QUERY_PARAM, newPage.toString())
+        return params
+      })
+    },
+    [setSearchParams]
+  )
 
   useEffect(() => {
     if (fetcher.state === 'idle' && fetcher.data) {

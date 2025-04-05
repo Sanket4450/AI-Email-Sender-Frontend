@@ -6,6 +6,6 @@ export interface Email {
   body: string
   isBounced: boolean
   isspamreported: boolean
-  createdAt: Date
+  createdAt: string
   contact: Contact
 }

@@ -40,6 +40,7 @@ export const SUCCESS_MSG = {
 
   // Fetch
   TAGS_FETCHED: 'Tags fetched successfully',
+  ESPS_FETCHED: 'ESPs fetched successfully',
 
   // Add
   COMPANY_ADDED: 'Company added successfully',

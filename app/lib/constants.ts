@@ -16,6 +16,7 @@ export const CONSTANTS = {
   BOUNCE_RATE: 'Bounce Rate',
   RESET: 'Reset',
   SUBMIT: 'Submit',
+  SELECTED: 'Selected',
 
   // Form Names
   MODIFY_COMPANY_FORM: 'Modify Company Form',

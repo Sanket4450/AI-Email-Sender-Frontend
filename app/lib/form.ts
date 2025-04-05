@@ -33,6 +33,7 @@ export const LABELS = {
 
   COMPANIES: 'Companies',
   CONTACTS: 'Contacts',
+  SENDERS: 'Senders',
   EMAILS: 'Emails',
   SCHEDULED_EMAILS: 'Scheduled Emails',
   DRAFTS: 'Drafts',
@@ -67,6 +68,7 @@ export const LABELS = {
   COMPANY_LOCATION: 'Company Location',
 
   TAGS: 'Tags',
+  PROVIDERS: 'Providers',
   CONTACT_NAME: 'Contact Name',
   POSITION: 'Position',
   EMAIL: 'Email',
@@ -89,6 +91,7 @@ export const PLACEHOLDERS = {
   COMPANY_LOCATION: 'Enter company location',
 
   TAGS: 'Select Tags',
+  PROVIDERS: 'Select Providers',
   CONTACT_NAME: 'Enter Contact Name',
   POSITION: 'Enter Position',
   EMAIL: 'Enter Email',

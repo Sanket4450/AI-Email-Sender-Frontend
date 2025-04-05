@@ -4,53 +4,61 @@ import {
   useNavigate,
   useSearchParams,
 } from '@remix-run/react'
-import { deleteContact, fetchContacts } from '~/api//contacts'
+import { deleteSender, fetchESPs, fetchSenders } from '~/api/senders'
 import { DataTable } from '~/components/shared/table/data-table'
-import { ColumnDef, ResourceAction, Response } from '~/types/common'
+import {
+  ColumnDef,
+  ResourceAction,
+  Response,
+  SelectOption,
+} from '~/types/common'
 import { ActionDropdown } from '~/components/shared/table/action-dropdown'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useModal } from '~/context/modal-context'
-import { Contact } from '~/types/contact'
+import { Sender } from '~/types/sender'
 import { LABELS, NAMES, PLACEHOLDERS } from '~/lib/form'
 import { safeExecute } from '~/lib/utils'
 import { SearchField } from '~/components/shared/form/search-field'
 import { useDebouncedSearch } from '~/hooks/use-debounced-search'
 import { Separator } from '~/components/ui/separator'
-import { TableFooterSection } from '~/components/shared/table/table-footer-section'
 import { VALUES } from '~/lib/values'
 import { PageTitle } from '~/components/layout/page-title'
 import { TableHeaderSection } from '~/components/shared/table/table-header-section'
-import { DeleteContactModal } from '~/components/contacts/delete-contact-modal'
+import { DeleteSenderModal } from '~/components/senders/delete-sender-modal'
 import { toast } from 'sonner'
 import { SUCCESS_MSG } from '~/lib/messages'
 import { LoaderFunctionArgs } from '@remix-run/node'
 import { CONSTANTS } from '~/lib/constants'
 import { ActionBtn, CancelBtn } from '~/components/shared/buttons'
-import { contactColumns } from '~/components/contacts/contact-columns'
+import { senderColumns } from '~/components/senders/senders-columns'
+import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
 
-interface ContactsRequest {
+interface SendersRequest {
   action: ResourceAction
   search: string
   page: number
   id: string
 }
 
-interface ContactsResponse {
+interface SendersResponse {
   count: number
-  data: Contact[]
+  data: Sender[]
 }
 
 export async function loader({
   request,
-}: LoaderFunctionArgs): Promise<ContactsResponse> {
+}: LoaderFunctionArgs): Promise<SendersResponse> {
   const url = new URL(request.url)
 
   const search = url.searchParams.get(VALUES.SEARCH_QUERY_PARAM) || ''
-  const page = parseInt(
-    url.searchParams.get(VALUES.PAGE_QUERY_PARAM) || '1',
-    10
-  )
-  const { count, data } = await fetchContacts({ search, page })
+  const selectedEspsStr: string =
+    url.searchParams.get(VALUES.ESPS_QUERY_PARAM) || ''
+
+  const esps: string[] = selectedEspsStr
+    ? selectedEspsStr.split(',')
+    : []
+
+  const { count, data } = await fetchSenders({ search, esps })
 
   return { count, data }
 }
@@ -60,16 +68,27 @@ export async function action({
 }: {
   request: Request
 }): Promise<Response | null> {
-  const { action, id }: ContactsRequest = await request.json()
+  const { action, id }: SendersRequest = await request.json()
 
   switch (action) {
-    case ResourceAction.DELETE_CONTACT:
+    case ResourceAction.ESPS_REFETCH:
       return await safeExecute(async () => {
-        await deleteContact(id)
+        const esps = await fetchESPs()
         return {
           success: true,
-          action: ResourceAction.DELETE_CONTACT,
-          message: SUCCESS_MSG.CONTACT_DELETED,
+          action: ResourceAction.ESPS_REFETCH,
+          message: SUCCESS_MSG.ESPS_FETCHED,
+          result: esps,
+        }
+      })
+
+    case ResourceAction.DELETE_SENDER:
+      return await safeExecute(async () => {
+        await deleteSender(id)
+        return {
+          success: true,
+          action: ResourceAction.DELETE_SENDER,
+          message: SUCCESS_MSG.SENDER_DELETED,
         }
       })
 
@@ -78,7 +97,7 @@ export async function action({
   }
 }
 
-export default function ContactsPage() {
+export default function SendersPage() {
   const loaderData = useLoaderData<typeof loader>()
 
   const fetcher = useFetcher<Response>()
@@ -87,24 +106,39 @@ export default function ContactsPage() {
 
   const urlSearch =
     searchParams.get(VALUES.SEARCH_QUERY_PARAM) || VALUES.INITIAL_SEARCH
-  const page = parseInt(
-    searchParams.get(VALUES.PAGE_QUERY_PARAM) || VALUES.INITIAL_PAGE_PARAM
-  )
+
+  const selectedEspsStr: string =
+    searchParams.get(VALUES.ESPS_QUERY_PARAM) || ''
+
+  const selectedESPs: string[] = selectedEspsStr
+    ? selectedEspsStr.split(',')
+    : []
 
   // Global States
   const { openModal, closeModal } = useModal()
 
   // Local States
-  const [contacts, setContacts] = useState<Contact[]>([])
+  const [senders, setSenders] = useState<Sender[]>([])
   const [totalCount, setTotalCount] = useState(0)
   const [searchText, setSearchText] = useState(urlSearch)
+  const [espOptions, setEspOptions] = useState<SelectOption[]>([])
 
   const navigate = useNavigate()
 
   const { search } = useDebouncedSearch(searchText)
 
   useEffect(() => {
-    setContacts(loaderData.data)
+    fetcher.submit(
+      { action: ResourceAction.ESPS_REFETCH },
+      {
+        method: 'POST',
+        encType: 'application/json',
+      }
+    )
+  }, [])
+
+  useEffect(() => {
+    setSenders(loaderData.data)
     setTotalCount(loaderData.count)
   }, [loaderData])
 
@@ -112,29 +146,24 @@ export default function ContactsPage() {
     if (urlSearch !== search) {
       setSearchParams((params) => {
         params.set(VALUES.SEARCH_QUERY_PARAM, search)
-        params.set(VALUES.PAGE_QUERY_PARAM, VALUES.INITIAL_PAGE_PARAM)
         return params
       })
     }
   }, [search, urlSearch, setSearchParams])
 
-  const resetFilterState = useCallback(() => {
-    setSearchParams((params) => {
-      params.set(VALUES.SEARCH_QUERY_PARAM, VALUES.INITIAL_SEARCH)
-      params.set(VALUES.PAGE_QUERY_PARAM, VALUES.INITIAL_PAGE_PARAM)
-      return params
-    })
-  }, [setSearchParams])
-
-  const handlePageChange = useCallback(
-    (newPage: number) => {
+  const setSelectedESPs = useCallback(
+    (values: string[]) => {
       setSearchParams((params) => {
-        params.set(VALUES.PAGE_QUERY_PARAM, newPage.toString())
+        params.set(VALUES.ESPS_QUERY_PARAM, values.join(','))
         return params
       })
     },
     [setSearchParams]
   )
+
+  const resetFilterState = useCallback(() => {
+    setSearchParams({})
+  }, [setSearchParams])
 
   useEffect(() => {
     if (fetcher.state === 'idle' && fetcher.data) {
@@ -144,9 +173,13 @@ export default function ContactsPage() {
         const { action } = fetcher.data
 
         switch (action) {
-          case ResourceAction.DELETE_CONTACT:
+          case ResourceAction.ESPS_REFETCH:
+            setEspOptions(fetcher.data.result)
+            break
+
+          case ResourceAction.DELETE_SENDER:
             toast.success(fetcher.data.message)
-            closeModal('delete-contact')
+            closeModal('delete-sender')
             break
 
           default:
@@ -156,28 +189,28 @@ export default function ContactsPage() {
     }
   }, [fetcher.state, fetcher.data])
 
-  const navigateToAddContact = useCallback(() => {
-    navigate('/contacts/add')
+  const navigateToAddSender = useCallback(() => {
+    navigate('/senders/add')
   }, [navigate])
 
-  const navigateToEditContact = useCallback(
+  const navigateToEditSender = useCallback(
     (id: string) => {
-      navigate(`/contacts/${id}/edit`)
+      navigate(`/senders/${id}/edit`)
     },
     [navigate]
   )
 
   const openDeleteModal = useCallback(
     (id: string) => {
-      openModal('delete-contact', { id })
+      openModal('delete-sender', { id })
     },
     [openModal]
   )
 
-  const handleDeleteContact = useCallback(
-    (contactId: string) => {
+  const handleDeleteSender = useCallback(
+    (senderId: string) => {
       fetcher.submit(
-        { action: ResourceAction.DELETE_CONTACT, id: contactId },
+        { action: ResourceAction.DELETE_SENDER, id: senderId },
         {
           method: 'DELETE',
           encType: 'application/json',
@@ -188,14 +221,14 @@ export default function ContactsPage() {
   )
 
   // Columns for the DataTable
-  const columns: ColumnDef<Contact>[] = useMemo(
+  const columns: ColumnDef<Sender>[] = useMemo(
     () => [
-      ...contactColumns,
+      ...senderColumns,
       {
         id: 'actions',
         cell: ({ row }) => (
           <ActionDropdown
-            onEdit={() => navigateToEditContact(row.id)}
+            onEdit={() => navigateToEditSender(row.id)}
             onDelete={() => openDeleteModal(row.id)}
           />
         ),
@@ -208,18 +241,34 @@ export default function ContactsPage() {
     <>
       <div className="h-full flex flex-col">
         {/* Header */}
-        <PageTitle title={LABELS.CONTACTS} />
+        <PageTitle
+          title={LABELS.SENDERS}
+          subtitle={`(${totalCount})`}
+        />
 
         {/* Table Header */}
         <TableHeaderSection>
           <SearchField
-            name={NAMES.SEARCH_CONTACTS}
-            placeholder={PLACEHOLDERS.SEARCH_CONTACTS}
+            name={NAMES.SEARCH_SENDERS}
+            placeholder={PLACEHOLDERS.SEARCH_SENDERS}
             value={searchText}
             onChange={setSearchText}
           />
 
           <div className="flex items-center gap-3">
+            <div className="w-36">
+              <CommonMultiSelectMenu
+                data={espOptions}
+                label={LABELS.PROVIDERS}
+                placeholder={PLACEHOLDERS.PROVIDERS}
+                selectedOptions={selectedESPs}
+                onChange={setSelectedESPs}
+                includeLabel={false}
+                showSelectedLabels={false}
+                readOnly={fetcher.state === 'loading'}
+              />
+            </div>
+
             <CancelBtn
               child={CONSTANTS.RESET}
               onClick={resetFilterState}
@@ -227,7 +276,7 @@ export default function ContactsPage() {
 
             <ActionBtn
               child={LABELS.ADD_NEW}
-              onClick={navigateToAddContact}
+              onClick={navigateToAddSender}
             />
           </div>
         </TableHeaderSection>
@@ -235,22 +284,13 @@ export default function ContactsPage() {
         {/* Table */}
         <DataTable
           columns={columns}
-          data={contacts}
+          data={senders}
         />
 
         <Separator />
-
-        {/* Table Footer */}
-        <TableFooterSection
-          page={page}
-          onPageChange={handlePageChange}
-          pageSize={VALUES.CONTACTS_PAGE_SIZE}
-          dataCount={contacts.length}
-          totalCount={totalCount}
-        />
       </div>
 
-      <DeleteContactModal onDelete={handleDeleteContact} />
+      <DeleteSenderModal onDelete={handleDeleteSender} />
     </>
   )
 }

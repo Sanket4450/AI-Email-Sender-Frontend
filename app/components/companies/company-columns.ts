@@ -3,6 +3,7 @@ import { NAMES } from '~/lib/form'
 import { formatDate, formatStringArray } from '~/lib/utils'
 import { ColumnDef } from '~/types/common'
 import { Company } from '~/types/company'
+import { createdAtColumn } from '../shared/table/common-columns'
 
 export const companyColumns: ColumnDef<Company>[] = [
   { accessorKey: 'title', header: 'Name' },
@@ -13,9 +14,5 @@ export const companyColumns: ColumnDef<Company>[] = [
     header: 'Tags',
     cell: ({ row }) => formatStringArray(row.tags, NAMES.TITLE) || CONSTANTS.NA,
   },
-  {
-    id: 'createdAt',
-    header: 'Created At',
-    cell: ({ row }) => formatDate(row.createdAt),
-  },
+  createdAtColumn
 ]

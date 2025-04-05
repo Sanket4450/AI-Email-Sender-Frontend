@@ -2,5 +2,5 @@ export interface Sender {
   id: string
   name: string
   email: string
-  createdAt: Date
+  createdAt: string
 }

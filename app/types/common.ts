@@ -38,6 +38,7 @@ export enum ResourceAction {
 
   // Senders
   SENDERS_REFETCH = 'senders-refetch',
+  ESPS_REFETCH = 'esps-refetch',
   ADD_SENDER = 'add-sender',
   EDIT_SENDER = 'edit-sender',
   DELETE_SENDER = 'delete-sender',
@@ -64,7 +65,7 @@ export interface ColumnDef<T> {
   maxWidth?: number
 }
 
-export interface SelectOptionRecord {
+export interface SelectOption {
   value: string
   label: string
 }

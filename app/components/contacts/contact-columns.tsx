@@ -1,8 +1,9 @@
 import { CONSTANTS } from '~/lib/constants'
 import { NAMES } from '~/lib/form'
-import { formatDate, formatStringArray } from '~/lib/utils'
+import { formatStringArray } from '~/lib/utils'
 import { ColumnDef } from '~/types/common'
 import { Contact } from '~/types/contact'
+import { createdAtColumn } from '../shared/table/common-columns'
 
 export const contactColumns: ColumnDef<Contact>[] = [
   { accessorKey: 'name', header: 'Name' },
@@ -10,7 +11,7 @@ export const contactColumns: ColumnDef<Contact>[] = [
   {
     id: 'company',
     header: 'Company',
-    cell: ({ row }) => row.company.title,
+    cell: ({ row }) => row.company.title || CONSTANTS.NA,
   },
   { accessorKey: 'email', header: 'Email' },
   {
@@ -24,9 +25,5 @@ export const contactColumns: ColumnDef<Contact>[] = [
     header: 'Tags',
     cell: ({ row }) => formatStringArray(row.tags, NAMES.TITLE) || CONSTANTS.NA,
   },
-  {
-    id: 'createdAt',
-    header: 'Created At',
-    cell: ({ row }) => formatDate(row.createdAt),
-  },
+  createdAtColumn,
 ]

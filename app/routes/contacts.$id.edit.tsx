@@ -14,12 +14,7 @@ import { CommonTextField } from '~/components/shared/form/common-text-field'
 import { PageTitle } from '~/components/layout/page-title'
 import { safeExecute } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
-import {
-  Filter,
-  ResourceAction,
-  Response,
-  SelectOptionRecord,
-} from '~/types/common'
+import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
 import { fetchTags } from '~/api/tags'
 import { Tag } from '~/types/tag'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
@@ -91,7 +86,7 @@ export default function EditContactPage() {
 
   const navigate = useNavigate()
 
-  const tagOptions: SelectOptionRecord[] = useMemo(
+  const tagOptions: SelectOption[] = useMemo(
     () => tags.map((t) => ({ value: t.id, label: t.title })),
     [tags]
   )
@@ -100,7 +95,9 @@ export default function EditContactPage() {
     if (loaderData) {
       const contact = loaderData
 
-      setSelectedTags(contact.tags.map((t) => t.id))
+      setSelectedTags(
+        contact.tags.map((t) => t.id)
+      )
 
       form.setValue('name', contact.name)
       form.setValue('position', contact.position)
@@ -183,7 +180,7 @@ export default function EditContactPage() {
                 data={tagOptions}
                 label={LABELS.TAGS}
                 placeholder={PLACEHOLDERS.TAGS}
-                values={selectedTags}
+                selectedOptions={selectedTags}
                 onChange={setSelectedTags}
                 readOnly={fetcher.state === 'loading'}
               />

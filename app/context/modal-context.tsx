@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState } from 'react'
 export type ModalType =
   | 'delete-company'
   | 'delete-contact'
+  | 'delete-sender'
   | 'delete-draft'
   | 'delete-scheduled-email'
 

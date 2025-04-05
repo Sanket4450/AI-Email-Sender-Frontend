@@ -7,20 +7,12 @@ import { addContact } from '~/api/contacts'
 import { useFetcher, useNavigate } from '@remix-run/react'
 import { ModifyContact, ModifyContactSchema } from '~/schemas/contact'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
-import { MODIFY_CONTACT_FIELDS } from '~/lib/form-fields'
-import { CONSTANTS, INPUT_TYPES } from '~/lib/constants'
-import { CommonTextarea } from '~/components/shared/form/common-textarea'
-import { CommonTextField } from '~/components/shared/form/common-text-field'
+import { CONSTANTS } from '~/lib/constants'
 import { PageTitle } from '~/components/layout/page-title'
 import { Contact } from '~/types/contact'
 import { safeExecute } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
-import {
-  Filter,
-  ResourceAction,
-  Response,
-  SelectOptionRecord,
-} from '~/types/common'
+import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
 import { fetchTags } from '~/api/tags'
 import { Tag } from '~/types/tag'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
@@ -78,13 +70,12 @@ export default function AddContactPage() {
   // Local States
   const [tags, setTags] = useState<Tag[]>([])
   const [totalCount, setTotalCount] = useState(0)
-  const [page, setPage] = useState(1)
 
   const [selectedTags, setSelectedTags] = useState<string[]>([])
 
   const navigate = useNavigate()
 
-  const tagOptions: SelectOptionRecord[] = useMemo(
+  const tagOptions: SelectOption[] = useMemo(
     () => tags.map((t) => ({ value: t.id, label: t.title })),
     [tags]
   )
@@ -162,7 +153,7 @@ export default function AddContactPage() {
                 data={tagOptions}
                 label={LABELS.TAGS}
                 placeholder={PLACEHOLDERS.TAGS}
-                values={selectedTags}
+                selectedOptions={selectedTags}
                 onChange={setSelectedTags}
                 readOnly={fetcher.state === 'loading'}
               />

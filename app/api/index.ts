@@ -19,23 +19,27 @@ export async function apiCall({
   headers = {},
   body = {},
 }: ApiCallProps): Promise<any> {
-  const response = await axios.request({
-    url: `${baseURL}/api/${url}`,
-    method,
-    params,
-    headers: {
-      'Content-Type': 'application/json',
-      ...headers,
-    },
-    data: method !== REQ_METHODS.GET ? JSON.stringify(body) : undefined,
-  })
+  try {
+    const response = await axios.request({
+      url: `${baseURL}/api/${url}`,
+      method,
+      params,
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+      data: method !== REQ_METHODS.GET ? JSON.stringify(body) : undefined,
+    })
 
-  const data = response.data
+    const data = response.data
 
-  if (!data?.success) {
-    console.error(`API Error: ${data?.message}`)
-    throw new Error(data?.message || ERROR_MSG.INTERNAL_SERVER_ERROR)
+    if (!data?.success) {
+      throw new Error(data)
+    }
+
+    return data
+  } catch (error: any) {
+    console.error(`API Error: ${error}`)
+    throw new Error(error)
   }
-
-  return data
 }

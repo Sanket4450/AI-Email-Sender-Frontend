@@ -5,7 +5,7 @@ import { normalizeString } from '~/lib/utils'
 
 const { debounce } = lodash
 
-export const useDebounce = (text: string) => {
+export const useDebouncedSearch = (text: string) => {
   const [search, setSearch] = useState('')
 
   const debouncedSearch = useCallback(

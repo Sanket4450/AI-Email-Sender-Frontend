@@ -3,8 +3,10 @@ export const VALUES = {
   COMMON_DATE_FORMAT: 'DD-MM-YYYY',
   SEARCH_QUERY_PARAM: 'q',
   PAGE_QUERY_PARAM: 'page',
+  ESPS_QUERY_PARAM: 'providers',
   INITIAL_PAGE: 1,
   INITIAL_PAGE_PARAM: '1',
+  INITIAL_ESPS_PARAM: '',
   INITIAL_SEARCH: '',
 
   // Layout

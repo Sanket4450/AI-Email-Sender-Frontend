@@ -15,12 +15,7 @@ import { PageTitle } from '~/components/layout/page-title'
 import { Company } from '~/types/company'
 import { safeExecute } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
-import {
-  Filter,
-  ResourceAction,
-  Response,
-  SelectOptionRecord,
-} from '~/types/common'
+import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
 import { fetchTags } from '~/api/tags'
 import { Tag } from '~/types/tag'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
@@ -84,7 +79,7 @@ export default function AddCompanyPage() {
 
   const navigate = useNavigate()
 
-  const tagOptions: SelectOptionRecord[] = useMemo(
+  const tagOptions: SelectOption[] = useMemo(
     () => tags.map((t) => ({ value: t.id, label: t.title })),
     [tags]
   )
@@ -159,7 +154,7 @@ export default function AddCompanyPage() {
                 data={tagOptions}
                 label={LABELS.TAGS}
                 placeholder={PLACEHOLDERS.TAGS}
-                values={selectedTags}
+                selectedOptions={selectedTags}
                 onChange={setSelectedTags}
                 readOnly={fetcher.state === 'loading'}
               />

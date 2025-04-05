@@ -25,5 +25,5 @@ export const contactColumns: ColumnDef<Contact>[] = [
     header: 'Tags',
     cell: ({ row }) => formatStringArray(row.tags, NAMES.TITLE) || CONSTANTS.NA,
   },
-  createdAtColumn,
+  createdAtColumn(),
 ]

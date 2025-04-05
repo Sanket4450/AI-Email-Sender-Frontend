@@ -14,5 +14,5 @@ export const companyColumns: ColumnDef<Company>[] = [
     header: 'Tags',
     cell: ({ row }) => formatStringArray(row.tags, NAMES.TITLE) || CONSTANTS.NA,
   },
-  createdAtColumn
+  createdAtColumn(),
 ]

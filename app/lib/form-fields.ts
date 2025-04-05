@@ -30,7 +30,6 @@ export const MODIFY_COMPANY_FIELDS: FormField[] = [
   },
 ]
 
-
 export const MODIFY_CONTACT_FIELDS: FormField[] = [
   {
     name: NAMES.NAME,

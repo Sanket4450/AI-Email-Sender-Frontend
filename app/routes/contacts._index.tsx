@@ -118,7 +118,7 @@ export default function ContactsPage() {
     }
   }, [search, urlSearch, setSearchParams])
 
-  const resetFilterState = useCallback(() => {
+  const resetFilter = useCallback(() => {
     setSearchParams((params) => {
       params.set(VALUES.SEARCH_QUERY_PARAM, VALUES.INITIAL_SEARCH)
       params.set(VALUES.PAGE_QUERY_PARAM, VALUES.INITIAL_PAGE_PARAM)
@@ -222,7 +222,7 @@ export default function ContactsPage() {
           <div className="flex items-center gap-3">
             <CancelBtn
               child={CONSTANTS.RESET}
-              onClick={resetFilterState}
+              onClick={resetFilter}
             />
 
             <ActionBtn

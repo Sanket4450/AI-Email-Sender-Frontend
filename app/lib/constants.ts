@@ -24,8 +24,7 @@ export const CONSTANTS = {
   MODIFY_DRAFT_FORM: 'Modify Draft Form',
   MODIFY_Email_FORM: 'Modify Email Form',
   MODIFY_SENDER_FORM: 'Modify Sender Form',
-  
-}
+} as const
 
 export const REQ_METHODS = {
   GET: 'get',
@@ -38,7 +37,7 @@ export const REQ_METHODS = {
 export const DEFAULT_DATA_RESPONSE = {
   count: 0,
   data: [],
-}
+} as const
 
 export const INPUT_TYPES = {
   TEXT: 'text',
@@ -50,4 +49,11 @@ export const INPUT_TYPES = {
   CHECKBOX: 'checkbox',
   RADIO: 'radio',
   FILE: 'file',
-}
+} as const
+
+export const EMAIL_EVENTS = {
+  PROCESSED: 'processed',
+  DELIVERED: 'delivered',
+  OPENED: 'opened',
+  CLICKED: 'clicked',
+} as const

@@ -10,5 +10,5 @@ export const senderColumns: ColumnDef<Sender>[] = [
   { accessorKey: 'priority', header: 'Priority' },
   { accessorKey: 'target', header: 'Target' },
   { accessorKey: 'sentCount', header: 'Sent Count' },
-  createdAtColumn,
+  createdAtColumn(),
 ]

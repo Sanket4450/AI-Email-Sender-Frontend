@@ -26,6 +26,7 @@ export const LABELS = {
   EDIT: 'Edit',
   DELETE: 'Delete',
   ADD_NEW: '+ Add New',
+  WRITE_NEW: '+ Write New',
   CANCEL: 'Cancel',
   SAVE: 'Save',
   SEND: 'Send',
@@ -37,6 +38,8 @@ export const LABELS = {
   EMAILS: 'Emails',
   SCHEDULED_EMAILS: 'Scheduled Emails',
   DRAFTS: 'Drafts',
+  CREATED_AT: 'Created At',
+  SENT_AT: 'Sent At',
 
   ADD_NEW_COMPANY: 'Add New Company',
   ADD_NEW_CONTACT: 'Add New Contact',

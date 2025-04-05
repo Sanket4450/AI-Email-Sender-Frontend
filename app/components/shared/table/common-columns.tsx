@@ -1,8 +1,11 @@
+import { LABELS } from '~/lib/form'
 import { formatDate } from '~/lib/utils'
 import { ColumnDef } from '~/types/common'
 
-export const createdAtColumn: ColumnDef<any> = {
+export const createdAtColumn = (
+  label: string = LABELS.CREATED_AT
+): ColumnDef<any> => ({
   id: 'createdAt',
-  header: 'Created At',
+  header: label,
   cell: ({ row }) => formatDate(row.createdAt),
-}
+})

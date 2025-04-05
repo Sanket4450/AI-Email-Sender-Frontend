@@ -54,9 +54,7 @@ export async function loader({
   const selectedEspsStr: string =
     url.searchParams.get(VALUES.ESPS_QUERY_PARAM) || ''
 
-  const esps: string[] = selectedEspsStr
-    ? selectedEspsStr.split(',')
-    : []
+  const esps: string[] = selectedEspsStr ? selectedEspsStr.split(',') : []
 
   const { count, data } = await fetchSenders({ search, esps })
 
@@ -161,7 +159,7 @@ export default function SendersPage() {
     [setSearchParams]
   )
 
-  const resetFilterState = useCallback(() => {
+  const resetFilter = useCallback(() => {
     setSearchParams({})
   }, [setSearchParams])
 
@@ -271,7 +269,7 @@ export default function SendersPage() {
 
             <CancelBtn
               child={CONSTANTS.RESET}
-              onClick={resetFilterState}
+              onClick={resetFilter}
             />
 
             <ActionBtn

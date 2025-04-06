@@ -5,7 +5,6 @@ export type ModalType =
   | 'delete-contact'
   | 'delete-sender'
   | 'delete-draft'
-  | 'delete-scheduled-email'
 
 interface ModalState {
   type: ModalType // Type of modal (e.g., "edit-company", "delete-contact")

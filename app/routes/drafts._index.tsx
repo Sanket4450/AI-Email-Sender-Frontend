@@ -25,7 +25,7 @@ import { toast } from 'sonner'
 import { SUCCESS_MSG } from '~/lib/messages'
 import { LoaderFunctionArgs } from '@remix-run/node'
 import { CONSTANTS } from '~/lib/constants'
-import { ActionBtn, CancelBtn } from '~/components/shared/buttons'
+import { ActionBtn, CancelBtn } from '~/components/shared/ui/buttons'
 import { draftColumns } from '~/components/drafts/drafts-columns'
 
 interface DraftsRequest {
@@ -156,8 +156,8 @@ export default function DraftsPage() {
     }
   }, [fetcher.state, fetcher.data])
 
-  const navigateToAddDraft = useCallback(() => {
-    navigate('/drafts/add')
+  const composeDraft = useCallback(() => {
+    navigate('/compose')
   }, [navigate])
 
   const navigateToEditDraft = useCallback(
@@ -226,8 +226,8 @@ export default function DraftsPage() {
             />
 
             <ActionBtn
-              child={LABELS.ADD_NEW}
-              onClick={navigateToAddDraft}
+              child={LABELS.COMPOSE_NEW}
+              onClick={composeDraft}
             />
           </div>
         </TableHeaderSection>

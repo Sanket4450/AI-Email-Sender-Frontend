@@ -22,7 +22,8 @@ export const DataTable = <T,>({ columns, data }: CompaniesTableProps<T>) => {
           {columns.map((c) => (
             <TableHead
               key={c.accessorKey || c.id}
-              className="">
+              className=""
+              style={{ textAlign: c.align || 'left' }}>
               {c.header}
             </TableHead>
           ))}
@@ -37,7 +38,7 @@ export const DataTable = <T,>({ columns, data }: CompaniesTableProps<T>) => {
               const cellValue = c.cell
                 ? c.cell({ row })
                 : c.accessorKey
-                ? (row as Record<string, any>)[c.accessorKey] || CONSTANTS.NA
+                ? (row as Record<string, any>)[c.accessorKey] ?? CONSTANTS.NA
                 : null
 
               return (

@@ -21,11 +21,13 @@ export const emailColumns: ColumnDef<Email>[] = [
   {
     id: 'isBounced',
     header: 'Bounced',
+    align: 'center',
     cell: ({ row }) => <StatusMarker status={row.isBounced} />,
   },
   {
     id: 'isSpamReported',
     header: 'Spam Reported',
+    align: 'center',
     cell: ({ row }) => <CompletionMarker completed={row.isSpamReported} />,
   },
   createdAtColumn(LABELS.SENT_AT),

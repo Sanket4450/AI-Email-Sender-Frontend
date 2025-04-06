@@ -1,16 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { Form } from '~/components/ui/form'
-import { addCompany, fetchSingleCompany, updateCompany } from '~/api/companies'
+import { fetchSingleCompany, updateCompany } from '~/api/companies'
 import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react'
 import { ModifyCompany, ModifyCompanySchema } from '~/schemas/company'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
-import { MODIFY_COMPANY_FIELDS } from '~/lib/form-fields'
-import { CONSTANTS, INPUT_TYPES } from '~/lib/constants'
-import { CommonTextarea } from '~/components/shared/form/common-textarea'
-import { CommonTextField } from '~/components/shared/form/common-text-field'
+import { CONSTANTS } from '~/lib/constants'
 import { PageTitle } from '~/components/layout/page-title'
 import { safeExecute } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
@@ -18,10 +15,11 @@ import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
 import { fetchTags } from '~/api/tags'
 import { Tag } from '~/types/tag'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
-import { SubmitBtn } from '~/components/shared/buttons'
+import { CancelBtn, SubmitBtn } from '~/components/shared/ui/buttons'
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { Company } from '~/types/company'
 import { ModifyCompanyFields } from '~/components/companies/modify-company-fields'
+import { FormActionWrapper } from '~/components/shared/ui/form-action-wrapper'
 
 interface EditCompanyRequest extends Filter {
   action: ResourceAction
@@ -80,7 +78,6 @@ export default function EditCompanyPage() {
   // Local States
   const [tags, setTags] = useState<Tag[]>([])
   const [totalCount, setTotalCount] = useState(0)
-  const [page, setPage] = useState(1)
 
   const [selectedTags, setSelectedTags] = useState<string[]>([])
 
@@ -144,6 +141,10 @@ export default function EditCompanyPage() {
     },
   })
 
+  const handleCancel = useCallback(() => {
+    navigate(-1)
+  }, [navigate])
+
   const handleSubmit = (values: ModifyCompany) => {
     fetcher.submit(
       {
@@ -156,7 +157,7 @@ export default function EditCompanyPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl">
       {/* Header */}
       <PageTitle title={LABELS.EDIT_COMPANY} />
 
@@ -181,12 +182,14 @@ export default function EditCompanyPage() {
         </form>
       </Form>
 
-      {/* Submit Button */}
-      <SubmitBtn
-        name={CONSTANTS.MODIFY_COMPANY_FORM}
-        child={LABELS.SAVE}
-        className="w-full mt-8"
-      />
+      {/* Form Action */}
+      <FormActionWrapper className="mt-8">
+        <CancelBtn onClick={handleCancel} />
+        <SubmitBtn
+          name={CONSTANTS.MODIFY_COMPANY_FORM}
+          child={LABELS.SAVE}
+        />
+      </FormActionWrapper>
     </div>
   )
 }

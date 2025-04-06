@@ -1,5 +1,5 @@
 import { LABELS } from '~/lib/form'
-import { Button } from '../ui/button'
+import { Button } from '../../ui/button'
 import { ClassValue } from 'clsx'
 import { cn } from '~/lib/utils'
 import { CONSTANTS } from '~/lib/constants'

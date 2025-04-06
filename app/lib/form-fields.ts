@@ -68,3 +68,20 @@ export const MODIFY_CONTACT_FIELDS: FormField[] = [
     type: INPUT_TYPES.TEXT,
   },
 ]
+
+
+export const COMPOSE_EMAIL_FIELDS: FormField[] = [
+  // {
+  //   name: NAMES.RECIPIENTS,
+  //   label: LABELS.TO,
+  //   placeholder: PLACEHOLDERS.RECIPIENTS,
+  //   type: INPUT_TYPES.TEXT,
+  //   readOnly: true,
+  // },
+  {
+    name: NAMES.SUBJECT,
+    label: LABELS.SUBJECT,
+    placeholder: PLACEHOLDERS.EMAIL_SUBJECT,
+    type: INPUT_TYPES.TEXT,
+  },
+]

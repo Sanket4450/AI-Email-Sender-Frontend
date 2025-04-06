@@ -18,6 +18,7 @@ import AppLayout from './components/layout/app-layout'
 import { PreventFlashOnWrongTheme, ThemeProvider, useTheme } from 'remix-themes'
 import { themeSessionResolver } from './sessions.server'
 import clsx from 'clsx'
+import '~/assets/styles/rich-text-editor.css'
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: stylesheet },

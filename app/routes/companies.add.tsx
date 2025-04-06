@@ -7,10 +7,7 @@ import { addCompany } from '~/api/companies'
 import { useFetcher, useNavigate } from '@remix-run/react'
 import { ModifyCompany, ModifyCompanySchema } from '~/schemas/company'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
-import { MODIFY_COMPANY_FIELDS } from '~/lib/form-fields'
-import { CONSTANTS, INPUT_TYPES } from '~/lib/constants'
-import { CommonTextarea } from '~/components/shared/form/common-textarea'
-import { CommonTextField } from '~/components/shared/form/common-text-field'
+import { CONSTANTS } from '~/lib/constants'
 import { PageTitle } from '~/components/layout/page-title'
 import { Company } from '~/types/company'
 import { safeExecute } from '~/lib/utils'
@@ -19,7 +16,7 @@ import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
 import { fetchTags } from '~/api/tags'
 import { Tag } from '~/types/tag'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
-import { SubmitBtn } from '~/components/shared/buttons'
+import { SubmitBtn } from '~/components/shared/ui/buttons'
 import { ModifyCompanyFields } from '~/components/companies/modify-company-fields'
 
 interface AddCompanyRequest extends Company, Filter {
@@ -73,7 +70,6 @@ export default function AddCompanyPage() {
   // Local States
   const [tags, setTags] = useState<Tag[]>([])
   const [totalCount, setTotalCount] = useState(0)
-  const [page, setPage] = useState(1)
 
   const [selectedTags, setSelectedTags] = useState<string[]>([])
 

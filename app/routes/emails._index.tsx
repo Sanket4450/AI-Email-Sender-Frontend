@@ -20,7 +20,7 @@ import { TableHeaderSection } from '~/components/shared/table/table-header-secti
 import { toast } from 'sonner'
 import { LoaderFunctionArgs } from '@remix-run/node'
 import { CONSTANTS } from '~/lib/constants'
-import { ActionBtn, CancelBtn } from '~/components/shared/buttons'
+import { ActionBtn, CancelBtn } from '~/components/shared/ui/buttons'
 import { emailColumns } from '~/components/emails/email-columns'
 
 interface EmailsRequest {
@@ -131,8 +131,8 @@ export default function EmailsPage() {
     }
   }, [fetcher.state, fetcher.data])
 
-  const navigateToAddEmail = useCallback(() => {
-    navigate('/emails/add')
+  const composeEmail = useCallback(() => {
+    navigate('/compose')
   }, [navigate])
 
   return (
@@ -157,8 +157,8 @@ export default function EmailsPage() {
             />
 
             <ActionBtn
-              child={LABELS.WRITE_NEW}
-              onClick={navigateToAddEmail}
+              child={LABELS.COMPOSE_NEW}
+              onClick={composeEmail}
             />
           </div>
         </TableHeaderSection>

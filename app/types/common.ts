@@ -33,6 +33,7 @@ export enum ResourceAction {
   // Emails
   EMAILS_REFETCH = 'emails-refetch',
   SEND_EMAIL = 'send-email',
+  SCHEDULE_EMAIL = 'schedule-email',
   EDIT_EMAIL = 'edit-email',
   DELETE_EMAIL = 'delete-email',
 

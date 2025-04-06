@@ -25,7 +25,7 @@ import { toast } from 'sonner'
 import { SUCCESS_MSG } from '~/lib/messages'
 import { LoaderFunctionArgs } from '@remix-run/node'
 import { CONSTANTS } from '~/lib/constants'
-import { ActionBtn, CancelBtn } from '~/components/shared/buttons'
+import { ActionBtn, CancelBtn } from '~/components/shared/ui/buttons'
 import { companyColumns } from '~/components/companies/company-columns'
 
 interface CompaniesRequest {

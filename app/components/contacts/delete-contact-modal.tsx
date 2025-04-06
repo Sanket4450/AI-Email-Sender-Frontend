@@ -1,5 +1,5 @@
 import { useModal } from '~/context/modal-context'
-import { DeleteDialog } from '../shared/delete-dialog'
+import { DeleteDialog } from '../shared/ui/delete-dialog'
 import { INFO_MSG, WARNING_MSG } from '~/lib/messages'
 
 interface DeleteContactModalProps {

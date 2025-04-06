@@ -7,7 +7,7 @@ import {
 import { Checkbox } from '~/components/ui/checkbox'
 import { cn } from '~/lib/utils'
 import { SelectOption } from '~/types/common'
-import { NoDataFound } from '../no-data-found'
+import { NoDataFound } from '../ui/no-data-found'
 import { INFO_MSG } from '~/lib/messages'
 import { CONSTANTS } from '~/lib/constants'
 

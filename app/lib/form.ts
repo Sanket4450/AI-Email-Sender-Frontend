@@ -19,6 +19,8 @@ export const NAMES = {
   EMAIL: 'email',
   PHONE: 'phone',
   LINKEDIN_URL: 'linkedInUrl',
+  RECIPIENTS: 'recipients',
+  SUBJECT: 'subject',
 }
 
 export const LABELS = {
@@ -27,6 +29,8 @@ export const LABELS = {
   DELETE: 'Delete',
   ADD_NEW: '+ Add New',
   WRITE_NEW: '+ Write New',
+  COMPOSE_NEW: '+ Compose New',
+  COMPOSE: 'Compose',
   CANCEL: 'Cancel',
   SAVE: 'Save',
   SEND: 'Send',
@@ -40,6 +44,11 @@ export const LABELS = {
   DRAFTS: 'Drafts',
   CREATED_AT: 'Created At',
   SENT_AT: 'Sent At',
+  SAVE_DRAFT: 'Save Draft',
+  SCHEDULE: 'Schedule',
+  TO: 'To',
+  SUBJECT: 'Subject',
+  BODY: 'Body',
 
   ADD_NEW_COMPANY: 'Add New Company',
   ADD_NEW_CONTACT: 'Add New Contact',
@@ -101,4 +110,6 @@ export const PLACEHOLDERS = {
   PHONE: 'Enter Phone',
   LINKEDIN_URL: 'Enter LinkedIn URL',
   LOCATION: 'Enter Location',
+  EMAIL_SUBJECT: 'Enter Email Subject',
+  RECIPIENTS: 'Enter Recipients',
 }

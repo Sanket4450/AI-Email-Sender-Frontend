@@ -7,10 +7,7 @@ import { fetchSingleContact, updateContact } from '~/api/contacts'
 import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react'
 import { ModifyContact, ModifyContactSchema } from '~/schemas/contact'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
-import { MODIFY_CONTACT_FIELDS } from '~/lib/form-fields'
-import { CONSTANTS, INPUT_TYPES } from '~/lib/constants'
-import { CommonTextarea } from '~/components/shared/form/common-textarea'
-import { CommonTextField } from '~/components/shared/form/common-text-field'
+import { CONSTANTS } from '~/lib/constants'
 import { PageTitle } from '~/components/layout/page-title'
 import { safeExecute } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
@@ -18,7 +15,7 @@ import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
 import { fetchTags } from '~/api/tags'
 import { Tag } from '~/types/tag'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
-import { SubmitBtn } from '~/components/shared/buttons'
+import { SubmitBtn } from '~/components/shared/ui/buttons'
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { Contact } from '~/types/contact'
 import { ModifyContactFields } from '~/components/contacts/modify-contact-fields'
@@ -80,7 +77,6 @@ export default function EditContactPage() {
   // Local States
   const [tags, setTags] = useState<Tag[]>([])
   const [totalCount, setTotalCount] = useState(0)
-  const [page, setPage] = useState(1)
 
   const [selectedTags, setSelectedTags] = useState<string[]>([])
 
@@ -95,9 +91,7 @@ export default function EditContactPage() {
     if (loaderData) {
       const contact = loaderData
 
-      setSelectedTags(
-        contact.tags.map((t) => t.id)
-      )
+      setSelectedTags(contact.tags.map((t) => t.id))
 
       form.setValue('name', contact.name)
       form.setValue('position', contact.position)

@@ -10,6 +10,7 @@ export const NAMES = {
   SEARCH_DRAFTS: 'search-drafts',
   SEARCH_SCHEDULED_EMAILS: 'search-scheduled-emails',
   SEARCH_SENDERS: 'search-senders',
+  TEXT_COLOR: 'text-color',
 
   TITLE: 'title',
   DESCRIPTION: 'description',
@@ -21,6 +22,7 @@ export const NAMES = {
   LINKEDIN_URL: 'linkedInUrl',
   RECIPIENTS: 'recipients',
   SUBJECT: 'subject',
+  IMAGE_UPLOAD: 'imageUpload',
 }
 
 export const LABELS = {
@@ -111,5 +113,8 @@ export const PLACEHOLDERS = {
   LINKEDIN_URL: 'Enter LinkedIn URL',
   LOCATION: 'Enter Location',
   EMAIL_SUBJECT: 'Enter Email Subject',
+  EMAIL_BODY: 'Write Your Email Body Here!',
   RECIPIENTS: 'Enter Recipients',
+  FONT_FAMILY: 'Font Family',
+  ALIGNMENT: 'Align',
 }

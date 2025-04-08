@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { addCompany } from '~/api/companies'
 import { useFetcher, useNavigate } from '@remix-run/react'
 import { ComposeEmail, ComposeEmailSchema } from '~/schemas/email'
-import { LABELS } from '~/lib/form'
+import { LABELS, PLACEHOLDERS } from '~/lib/form'
 import { PageTitle } from '~/components/layout/page-title'
 import { Company } from '~/types/company'
 import { safeExecute } from '~/lib/utils'
@@ -230,7 +230,8 @@ export default function AddCompanyPage() {
 
             <Label className="w-full">{LABELS.BODY}</Label>
             <RichEditor
-              value={content}
+              placeholder={PLACEHOLDERS.EMAIL_BODY}
+              initialValue={content}
               onChange={setContent}
             />
           </CardContent>

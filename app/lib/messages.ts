@@ -2,6 +2,7 @@ export const ERROR_MSG = {
   // General
   INTERNAL_SERVER_ERROR: 'Internal server error',
   SOMETHING_WENT_WRONG: 'Something Went Wrong!',
+  INVALID_URL: 'Invalid URL',
 }
 
 

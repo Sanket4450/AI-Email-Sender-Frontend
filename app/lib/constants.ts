@@ -69,3 +69,46 @@ export const EMAIL_EVENTS = {
   OPENED: 'opened',
   CLICKED: 'clicked',
 } as const
+
+// Rich Text Editor
+export const HEADERS = [
+  { value: '1', label: 'H1' },
+  { value: '2', label: 'H2' },
+  { value: '3', label: 'H3' },
+  { value: '4', label: 'H4' },
+]
+
+export const FONT_SIZES = [
+  { value: '8px', label: '8' },
+  { value: '12px', label: '8' },
+  { value: '16px', label: '16' },
+  { value: '20px', label: '20' },
+  { value: '24px', label: '24' },
+  { value: '32px', label: '32' },
+  { value: '48px', label: '48' },
+]
+
+export const FONTS = [
+  { value: 'Arial', label: 'Arial' },
+  { value: 'Times New Roman', label: 'Times New Roman' },
+  { value: 'Courier New', label: 'Courier New' },
+  { value: 'Georgia', label: 'Georgia' },
+  { value: 'Verdana', label: 'Verdana' },
+  { value: 'monospace', label: 'monospace' },
+]
+
+
+export const TEXT_ALIGNMENTS = [
+  {
+    value: 'left',
+    url: 'https://www.gstatic.com/images/icons/material/system_gm/1x/format_align_left_black_20dp.png',
+  },
+  {
+    value: 'center',
+    url: 'https://www.gstatic.com/images/icons/material/system_gm/1x/format_align_center_black_20dp.png',
+  },
+  {
+    value: 'right',
+    url: 'https://www.gstatic.com/images/icons/material/system_gm/1x/format_align_right_black_20dp.png',
+  },
+]

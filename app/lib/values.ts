@@ -8,6 +8,7 @@ export const VALUES = {
   INITIAL_PAGE_PARAM: '1',
   INITIAL_ESPS_PARAM: '',
   INITIAL_SEARCH: '',
+  INITIAL_SPINNER_SIZE: 24,
 
   // Layout
   HEADER_HEIGHT: 60,

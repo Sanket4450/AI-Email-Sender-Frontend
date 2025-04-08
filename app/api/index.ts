@@ -1,8 +1,7 @@
 import axios from 'axios'
 import { REQ_METHODS } from '~/lib/constants'
-import { ERROR_MSG } from '~/lib/messages'
 
-const baseURL = process.env.BACKEND_URL
+ const baseURL = process.env.BACKEND_URL
 
 interface ApiCallProps {
   url: string

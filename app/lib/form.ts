@@ -38,6 +38,7 @@ export const LABELS = {
   SAVE: 'Save',
   SEND: 'Send',
   SEND_NOW: 'Send Now',
+  GENERATE_EMAIL: 'Generate Email',
 
   COMPANIES: 'Companies',
   CONTACTS: 'Contacts',

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
+import axios from 'axios'
 import { addCompany } from '~/api/companies'
 import { useFetcher, useNavigate } from '@remix-run/react'
 import {
@@ -20,7 +21,7 @@ import { fetchTags } from '~/api/tags'
 import { Tag } from '~/types/tag'
 import { ActionBtn, SubmitBtn } from '~/components/shared/ui/buttons'
 import { RichEditor } from '~/components/shared/rich-text-editor'
-import { CONSTANTS } from '~/lib/constants'
+import { CONSTANTS, REQ_METHODS } from '~/lib/constants'
 import { FormActionWrapper } from '~/components/shared/ui/form-action-wrapper'
 import { Card, CardContent, CardFooter, CardHeader } from '~/components/ui/card'
 import { Clock, Save, Send } from 'lucide-react'
@@ -35,6 +36,9 @@ import { fetchSenders } from '~/api/senders'
 import { Sender } from '~/types/sender'
 import { CommonSelectMenu } from '~/components/shared/form/common-select-menu'
 import { GenerateEmailFields } from '~/components/emails/generate-email-fields'
+// import { baseURL } from '~/api'
+
+const baseUrl = import.meta.env.VITE_BACKEND_URL
 
 interface AddCompanyRequest extends Filter {
   action: ResourceAction
@@ -134,6 +138,8 @@ export default function AddCompanyPage() {
   const [selectedSender, setSelectedSender] = useState<string | null>(null)
 
   const [content, setContent] = useState('')
+  const [generatingResponse, setGeneratingResponse] = useState(false)
+  const [generatedResponse, setGeneratedResponse] = useState('')
   const navigate = useNavigate()
 
   const contactOptions: SelectOption[] = useMemo(
@@ -222,22 +228,48 @@ export default function AddCompanyPage() {
     },
   })
 
-  const handleGenerateEmail = (values: GenerateEmail) => {
-    fetcher.submit(
-      {
-        action: ResourceAction.GENERATE_EMAIL,
-        ...values,
-      },
-      { method: 'POST', encType: 'application/json' }
-    )
+  const validateGenerateEmailForm = async () => {
+    return generateeEmailForm.trigger()
   }
 
-  const validateForm = async () => {
+  const validateComposeEmailForm = async () => {
     return composeEmailForm.trigger()
   }
 
+  const handleGenerateEmail = async () => {
+    if (await validateGenerateEmailForm()) {
+      const values = generateeEmailForm.getValues()
+
+      try {
+        setGeneratingResponse(true)
+        setGeneratedResponse('')
+
+        const response = await axios.request({
+          url: `${baseUrl}/api/ai/generate/email`,
+          method: REQ_METHODS.POST,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: JSON.stringify(values),
+          responseType: 'stream',
+          onDownloadProgress: (progressEvent) => {
+            const chunk = progressEvent.event.target.response
+            console.log(chunk)
+            setContent((prevContent) => prevContent + chunk)
+          },
+        })
+
+        console.log('final response ---------------->', response.data)
+      } catch (error) {
+        console.log('error occured on generate email', error)
+      } finally {
+        setGeneratingResponse(false)
+      }
+    }
+  }
+
   const handleSaveDraft = async () => {
-    if (await validateForm()) {
+    if (await validateComposeEmailForm()) {
       const values = composeEmailForm.getValues()
 
       fetcher.submit(
@@ -252,7 +284,7 @@ export default function AddCompanyPage() {
   }
 
   const handleScheduleEmail = async () => {
-    if (await validateForm()) {
+    if (await validateComposeEmailForm()) {
       const values = composeEmailForm.getValues()
 
       fetcher.submit(
@@ -267,7 +299,7 @@ export default function AddCompanyPage() {
   }
 
   const handleSendEmail = async () => {
-    if (await validateForm()) {
+    if (await validateComposeEmailForm()) {
       const values = composeEmailForm.getValues()
 
       fetcher.submit(
@@ -350,14 +382,19 @@ export default function AddCompanyPage() {
             <Form {...generateeEmailForm}>
               <form
                 id={CONSTANTS.GENERATE_EMAIL_FORM}
-                className="flex-1 min-h-0"
-                onSubmit={generateeEmailForm.handleSubmit(handleGenerateEmail)}>
+                className="flex-1 min-h-0">
                 <GenerateEmailFields control={generateeEmailForm.control} />
               </form>
             </Form>
           </CardContent>
 
-          {/* <CardFooter><ActionBtn isLoading={} child={} /></CardFooter> */}
+          <CardFooter>
+            <ActionBtn
+              isLoading={generatingResponse}
+              child={LABELS.GENERATE_EMAIL}
+              onClick={handleGenerateEmail}
+            />
+          </CardFooter>
         </Card>
 
         {/* Right (Preview) Section */}
@@ -365,9 +402,7 @@ export default function AddCompanyPage() {
           <CardContent className="flex-1 min-h-0 flex flex-col gap-y-3 p-5 py-4">
             {/* Compose Email Form */}
             <Form {...composeEmailForm}>
-              <form
-                id={CONSTANTS.COMPOSE_EMAIL_FORM}
-                onSubmit={composeEmailForm.handleSubmit(() => {})}>
+              <form id={CONSTANTS.COMPOSE_EMAIL_FORM}>
                 <ComposeEmailFields control={composeEmailForm.control} />
               </form>
             </Form>

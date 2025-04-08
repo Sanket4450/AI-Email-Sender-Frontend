@@ -3,6 +3,7 @@ import { Button } from '../../ui/button'
 import { ClassValue } from 'clsx'
 import { cn } from '~/lib/utils'
 import { CONSTANTS } from '~/lib/constants'
+import { Spinner } from './spinner'
 
 interface ButtonProps {
   isLoading?: boolean
@@ -49,7 +50,7 @@ export const ActionBtn = ({
         className
       )}
       onClick={onClick}>
-      {child}
+      {isLoading ? <Spinner /> : child}
     </Button>
   )
 }
@@ -57,14 +58,25 @@ export const ActionBtn = ({
 interface SubmitButtonProps {
   child?: React.ReactNode
   name: string
+  isLoading?: boolean
   className?: ClassValue
 }
 
-export const SubmitBtn = ({ child, name, className }: SubmitButtonProps) => {
+export const SubmitBtn = ({
+  child,
+  name,
+  isLoading = false,
+  className,
+}: SubmitButtonProps) => {
   return (
     <Button
       type="submit"
       form={name}
+      disabled={isLoading}
+      onClick={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+      }}
       className={cn(
         'bg-primary hover:bg-primary-foreground text-white font-bold py-2 px-4 rounded',
         className

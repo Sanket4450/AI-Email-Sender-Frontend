@@ -4,7 +4,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { addCompany } from '~/api/companies'
 import { useFetcher, useNavigate } from '@remix-run/react'
-import { ComposeEmail, ComposeEmailSchema } from '~/schemas/email'
+import {
+  ComposeEmail,
+  ComposeEmailSchema,
+  GenerateEmail,
+  GenerateEmailSchema,
+} from '~/schemas/email'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
 import { PageTitle } from '~/components/layout/page-title'
 import { Company } from '~/types/company'
@@ -17,15 +22,21 @@ import { ActionBtn, SubmitBtn } from '~/components/shared/ui/buttons'
 import { RichEditor } from '~/components/shared/rich-text-editor'
 import { CONSTANTS } from '~/lib/constants'
 import { FormActionWrapper } from '~/components/shared/ui/form-action-wrapper'
-import { Card, CardContent, CardHeader } from '~/components/ui/card'
+import { Card, CardContent, CardFooter, CardHeader } from '~/components/ui/card'
 import { Clock, Save, Send } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import { ComposeEmailFields } from '~/components/emails/compose-email-fields'
 import { Form } from '~/components/ui/form'
 import { Label } from '~/components/ui/label'
 import { Contact } from '~/types/contact'
+import { fetchContacts } from '~/api/contacts'
+import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
+import { fetchSenders } from '~/api/senders'
+import { Sender } from '~/types/sender'
+import { CommonSelectMenu } from '~/components/shared/form/common-select-menu'
+import { GenerateEmailFields } from '~/components/emails/generate-email-fields'
 
-interface AddCompanyRequest extends Company, Filter {
+interface AddCompanyRequest extends Filter {
   action: ResourceAction
 }
 
@@ -37,6 +48,15 @@ export async function action({
   const { action, search, page, ...data }: AddCompanyRequest =
     await request.json()
 
+  const fetchContactsData = async () => {
+    const { count, data } = await fetchContacts({
+      search,
+      page,
+    })
+
+    return { count, data }
+  }
+
   const fetchTagsData = async () => {
     const { count, data } = await fetchTags({
       search,
@@ -46,13 +66,37 @@ export async function action({
     return { count, data }
   }
 
+  const fetchSendersData = async () => {
+    const { count, data } = await fetchSenders({
+      search,
+    })
+
+    return { count, data }
+  }
+
   switch (action) {
+    case ResourceAction.CONTACTS_REFETCH:
+      return {
+        success: true,
+        action: ResourceAction.CONTACTS_REFETCH,
+        message: SUCCESS_MSG.CONTACTS_FETCHED,
+        result: await fetchContactsData(),
+      }
+
     case ResourceAction.TAGS_REFETCH:
       return {
         success: true,
         action: ResourceAction.TAGS_REFETCH,
         message: SUCCESS_MSG.TAGS_FETCHED,
         result: await fetchTagsData(),
+      }
+
+    case ResourceAction.SENDERS_REFETCH:
+      return {
+        success: true,
+        action: ResourceAction.SENDERS_REFETCH,
+        message: SUCCESS_MSG.SENDERS_FETCHED,
+        result: await fetchSendersData(),
       }
 
     case ResourceAction.ADD_COMPANY:
@@ -72,20 +116,30 @@ export async function action({
 
 export default function AddCompanyPage() {
   const fetcher = useFetcher<Response>()
+  const tagsFetcher = useFetcher<Response>()
+  const sendersFetcher = useFetcher<Response>()
+  const generateEmailFetcher = useFetcher<Response>()
 
   // Local States
   const [contacts, setContacts] = useState<Contact[]>([])
-  const [totalContactsCount, setTotalContactsCount] = useState(0)
-
   const [tags, setTags] = useState<Tag[]>([])
+  const [senders, setSenders] = useState<Sender[]>([])
+
+  const [totalContactsCount, setTotalContactsCount] = useState(0)
   const [totalTagsCount, setTotalTagsCount] = useState(0)
+  const [totalSendersCount, setTotalSendersCount] = useState(0)
 
-  const [selectedContacts, setSelectedContacts] = useState<SelectOption[]>([])
-  const [content, setContent] = useState('')
-
+  const [selectedContacts, setSelectedContacts] = useState<string[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [selectedSender, setSelectedSender] = useState<string | null>(null)
 
+  const [content, setContent] = useState('')
   const navigate = useNavigate()
+
+  const contactOptions: SelectOption[] = useMemo(
+    () => contacts.map((c) => ({ ...c, value: c.id, label: c.name })),
+    [contacts]
+  )
 
   const tagOptions: SelectOption[] = useMemo(
     () => tags.map((t) => ({ value: t.id, label: t.title })),
@@ -98,9 +152,9 @@ export default function AddCompanyPage() {
         const { action } = fetcher.data
 
         switch (action) {
-          case ResourceAction.TAGS_REFETCH:
-            setTags(fetcher.data.result.data)
-            setTotalTagsCount(fetcher.data.result.count)
+          case ResourceAction.CONTACTS_REFETCH:
+            setContacts(fetcher.data.result.data)
+            setTotalContactsCount(fetcher.data.result.count)
             break
 
           case ResourceAction.ADD_COMPANY:
@@ -118,27 +172,73 @@ export default function AddCompanyPage() {
   }, [fetcher.data])
 
   useEffect(() => {
+    if (tagsFetcher.data) {
+      if (tagsFetcher.data.success) {
+        setTags(tagsFetcher.data.result.data)
+        setTotalTagsCount(tagsFetcher.data.result.count)
+      } else {
+        toast.error(tagsFetcher.data.message)
+      }
+    }
+  }, [tagsFetcher.data])
+
+  useEffect(() => {
+    if (sendersFetcher.data) {
+      if (sendersFetcher.data.success) {
+        setSenders(sendersFetcher.data.result.data)
+        setTotalSendersCount(sendersFetcher.data.result.count)
+      } else {
+        toast.error(sendersFetcher.data.message)
+      }
+    }
+  }, [sendersFetcher.data])
+
+  useEffect(() => {
     fetcher.submit(
+      { action: ResourceAction.CONTACTS_REFETCH },
+      { method: 'POST', encType: 'application/json' }
+    )
+    tagsFetcher.submit(
       { action: ResourceAction.TAGS_REFETCH },
+      { method: 'POST', encType: 'application/json' }
+    )
+    sendersFetcher.submit(
+      { action: ResourceAction.SENDERS_REFETCH },
       { method: 'POST', encType: 'application/json' }
     )
   }, [])
 
-  // Initialize the form with react-hook-form and Zod validation
-  const form = useForm<ComposeEmail>({
+  const generateeEmailForm = useForm<GenerateEmail>({
+    resolver: zodResolver(GenerateEmailSchema),
+    defaultValues: {
+      prompt: '',
+    },
+  })
+
+  const composeEmailForm = useForm<ComposeEmail>({
     resolver: zodResolver(ComposeEmailSchema),
     defaultValues: {
       subject: '',
     },
   })
 
+  const handleGenerateEmail = (values: GenerateEmail) => {
+    fetcher.submit(
+      {
+        action: ResourceAction.GENERATE_EMAIL,
+        ...values,
+      },
+      { method: 'POST', encType: 'application/json' }
+    )
+  }
+
   const validateForm = async () => {
-    return form.trigger()
+    return composeEmailForm.trigger()
   }
 
   const handleSaveDraft = async () => {
     if (await validateForm()) {
-      const values = form.getValues()
+      const values = composeEmailForm.getValues()
 
       fetcher.submit(
         {
@@ -153,7 +253,7 @@ export default function AddCompanyPage() {
 
   const handleScheduleEmail = async () => {
     if (await validateForm()) {
-      const values = form.getValues()
+      const values = composeEmailForm.getValues()
 
       fetcher.submit(
         {
@@ -168,7 +268,7 @@ export default function AddCompanyPage() {
 
   const handleSendEmail = async () => {
     if (await validateForm()) {
-      const values = form.getValues()
+      const values = composeEmailForm.getValues()
 
       fetcher.submit(
         {
@@ -212,19 +312,63 @@ export default function AddCompanyPage() {
         </FormActionWrapper>
       </header>
 
-      <main className="flex-1 min-h-0 flex">
+      <main className="flex-1 min-h-0 flex gap-4">
         {/* Left (Info) Section */}
-        <section className="w-[40%]"></section>
+        <Card className="w-[40%] h-full flex flex-col">
+          <CardContent className="flex-1 min-h-0 flex flex-col gap-y-3 p-5 py-4">
+            {/* Select Contacts */}
+            <CommonMultiSelectMenu
+              data={contactOptions}
+              selectedOptions={selectedContacts}
+              label={LABELS.CONTACTS}
+              placeholder={PLACEHOLDERS.CONTACTS}
+              onChange={setSelectedContacts}
+              readOnly={fetcher.state === 'loading'}
+            />
+
+            {/* Select Tags */}
+            <CommonMultiSelectMenu
+              data={tagOptions}
+              selectedOptions={selectedTags}
+              label={LABELS.TAGS}
+              placeholder={PLACEHOLDERS.TAGS}
+              onChange={setSelectedTags}
+              readOnly={tagsFetcher.state === 'loading'}
+            />
+
+            {/* Select Sender */}
+            <CommonSelectMenu
+              data={tagOptions}
+              selectedOption={selectedSender}
+              label={LABELS.SENDER}
+              placeholder={PLACEHOLDERS.SENDER}
+              onChange={setSelectedSender}
+              readOnly={sendersFetcher.state === 'loading'}
+            />
+
+            {/* Form */}
+            <Form {...generateeEmailForm}>
+              <form
+                id={CONSTANTS.GENERATE_EMAIL_FORM}
+                className="flex-1 min-h-0"
+                onSubmit={generateeEmailForm.handleSubmit(handleGenerateEmail)}>
+                <GenerateEmailFields control={generateeEmailForm.control} />
+              </form>
+            </Form>
+          </CardContent>
+
+          {/* <CardFooter><ActionBtn isLoading={} child={} /></CardFooter> */}
+        </Card>
 
         {/* Right (Preview) Section */}
         <Card className="flex-1 h-full flex flex-col">
           <CardContent className="flex-1 min-h-0 flex flex-col gap-y-3 p-5 py-4">
-            {/* Form */}
-            <Form {...form}>
+            {/* Compose Email Form */}
+            <Form {...composeEmailForm}>
               <form
                 id={CONSTANTS.COMPOSE_EMAIL_FORM}
-                onSubmit={form.handleSubmit(() => {})}>
-                <ComposeEmailFields control={form.control} />
+                onSubmit={composeEmailForm.handleSubmit(() => {})}>
+                <ComposeEmailFields control={composeEmailForm.control} />
               </form>
             </Form>
 

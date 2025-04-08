@@ -25,6 +25,7 @@ export const CONSTANTS = {
   MODIFY_COMPANY_FORM: 'Modify Company Form',
   MODIFY_CONTACT_FORM: 'Modify Contact Form',
   MODIFY_DRAFT_FORM: 'Modify Draft Form',
+  GENERATE_EMAIL_FORM: 'Generate Email Form',
   COMPOSE_EMAIL_FORM: 'Compose Email Form',
   MODIFY_SENDER_FORM: 'Modify Sender Form',
 } as const

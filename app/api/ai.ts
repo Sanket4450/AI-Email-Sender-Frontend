@@ -2,28 +2,6 @@ import {  Search } from '~/types/common'
 import { apiCall } from '.'
 import { DEFAULT_DATA_RESPONSE, REQ_METHODS } from '~/lib/constants'
 
-interface FetchSenders extends Search {
-  esps?: string[]
-}
-
-export async function fetchSenders({ search, esps = [] }: FetchSenders) {
-  try {
-    const body = {
-      ...(search && { search }),
-      esps,
-    }
-    const { result } = await apiCall({
-      url: 'senders/get',
-      method: REQ_METHODS.POST,
-      body,
-    })
-
-    return result
-  } catch (error) {
-    return DEFAULT_DATA_RESPONSE
-  }
-}
-
 export async function fetchESPs() {
   try {
     const { result } = await apiCall({

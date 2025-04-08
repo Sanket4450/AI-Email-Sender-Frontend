@@ -1,7 +1,12 @@
 import { z } from 'zod'
 
+export const GenerateEmailSchema = z.object({
+  prompt: z.string().min(1, { message: 'Prompt is required.' }),
+})
+
+export type GenerateEmail = z.infer<typeof GenerateEmailSchema>
+
 export const ComposeEmailSchema = z.object({
-  // recipients: z.string().min(1, { message: 'No recipients selected.' }),
   subject: z.string().min(1, { message: 'Subject is required.' }),
 })
 

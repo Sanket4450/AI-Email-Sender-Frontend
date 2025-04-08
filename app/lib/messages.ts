@@ -40,6 +40,11 @@ export const SUCCESS_MSG = {
   THEME_TOGGLED: 'Theme toggled successfully',
 
   // Fetch
+  COMPANIES_FETCHED: 'Companies fetched successfully',
+  CONTACTS_FETCHED: 'Contacts fetched successfully',
+  DRAFTS_FETCHED: 'Drafts fetched successfully',
+  SENDERS_FETCHED: 'Senders fetched successfully',
+  EMAILS_FETCHED: 'Emails fetched successfully',
   TAGS_FETCHED: 'Tags fetched successfully',
   ESPS_FETCHED: 'ESPs fetched successfully',
 

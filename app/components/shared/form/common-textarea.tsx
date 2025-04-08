@@ -41,3 +41,35 @@ export const CommonTextarea = ({
     />
   )
 }
+
+
+export const FullTextarea = ({
+  name,
+  label,
+  placeholder,
+  control,
+  readOnly = false,
+  labelStyles = '',
+}: CommonTextareaProps) => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="h-full flex flex-col">
+          <FormLabel className={cn('w-full', labelStyles)}>{label}</FormLabel>
+          <FormControl>
+            <Textarea
+              placeholder={placeholder}
+              autoComplete="off"
+              readOnly={readOnly}
+              className="flex-1 min-h-0 overflow-y-auto resize-none"
+              {...field}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  )
+}

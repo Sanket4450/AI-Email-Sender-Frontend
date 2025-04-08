@@ -10,6 +10,7 @@ import { SelectOption } from '~/types/common'
 import { NoDataFound } from '../ui/no-data-found'
 import { INFO_MSG } from '~/lib/messages'
 import { CONSTANTS } from '~/lib/constants'
+import { useCallback, useMemo } from 'react'
 
 interface MultiSelectMenuProps {
   data: SelectOption[]
@@ -34,13 +35,29 @@ export const CommonMultiSelectMenu = ({
   showSelectedLabels = true,
   labelStyles,
 }: MultiSelectMenuProps) => {
-  const handleToggle = (v: string) => {
-    if (selectedOptions.includes(v)) {
-      onChange(selectedOptions.filter((sv) => sv !== v))
-    } else {
-      onChange([...selectedOptions, v])
-    }
-  }
+  const selectedOptionLabels = useMemo(
+    () =>
+      data
+        .filter((d) => selectedOptions.some((o) => d.value === o))
+        .map((d) => d.label)
+        .join(', '),
+    [data, selectedOptions]
+  )
+
+  const handleToggle = useCallback(
+    (v: string) => {
+      if (selectedOptions.includes(v)) {
+        onChange(selectedOptions.filter((sv) => sv !== v))
+      } else {
+        onChange([...selectedOptions, v])
+      }
+    },
+    [selectedOptions, onChange]
+  )
+
+  const renderedLabel = !showSelectedLabels
+    ? `(${selectedOptions.length}) ${CONSTANTS.SELECTED}`
+    : selectedOptionLabels
 
   return (
     <div className="w-full space-y-2">
@@ -54,19 +71,11 @@ export const CommonMultiSelectMenu = ({
         <PopoverTrigger asChild>
           <button
             type="button"
-            className="h-10 w-full rounded-md text-sm py-2 px-3 border border-input focus:border-foreground bg-background text-left focus:outline-none disabled:opacity-50"
+            className="w-full rounded-md py-2 px-3 text-sm border border-input focus:border-foreground bg-background text-left focus:outline-none disabled:opacity-50"
             disabled={readOnly}>
             {selectedOptions.length > 0 ? (
-              // Display selected labels if any
-              !showSelectedLabels ? (
-                `(${selectedOptions.length}) ${CONSTANTS.SELECTED}`
-              ) : (
-                selectedOptions
-                  .filter((v) => data.find((d) => d.value === v)?.label)
-                  .join(', ')
-              )
+              renderedLabel
             ) : (
-              // Display placeholder if no selection
               <span className="text-muted-foreground">{placeholder}</span>
             )}
           </button>

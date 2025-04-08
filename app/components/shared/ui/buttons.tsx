@@ -5,6 +5,7 @@ import { cn } from '~/lib/utils'
 import { CONSTANTS } from '~/lib/constants'
 
 interface ButtonProps {
+  isLoading?: boolean
   child?: React.ReactNode
   onClick: () => void
 }
@@ -13,9 +14,14 @@ interface CancelButtonProps extends ButtonProps {
   child?: React.ReactNode
 }
 
-export const CancelBtn = ({ child, onClick }: CancelButtonProps) => {
+export const CancelBtn = ({
+  child,
+  isLoading = false,
+  onClick,
+}: CancelButtonProps) => {
   return (
     <Button
+      disabled={isLoading}
       variant="secondary"
       className="font-bold py-2 px-4 rounded"
       onClick={onClick}>
@@ -29,9 +35,15 @@ interface ActionButtonProps extends ButtonProps {
   className?: ClassValue
 }
 
-export const ActionBtn = ({ child, onClick, className }: ActionButtonProps) => {
+export const ActionBtn = ({
+  child,
+  isLoading = false,
+  onClick,
+  className,
+}: ActionButtonProps) => {
   return (
     <Button
+      disabled={isLoading}
       className={cn(
         'bg-primary hover:bg-primary-foreground text-white font-bold py-2 px-4 rounded',
         className

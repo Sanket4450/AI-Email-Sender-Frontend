@@ -23,6 +23,7 @@ export const NAMES = {
   RECIPIENTS: 'recipients',
   SUBJECT: 'subject',
   IMAGE_UPLOAD: 'imageUpload',
+  PROMPT: 'prompt',
 }
 
 export const LABELS = {
@@ -41,6 +42,7 @@ export const LABELS = {
   COMPANIES: 'Companies',
   CONTACTS: 'Contacts',
   SENDERS: 'Senders',
+  SENDER: 'Sender',
   EMAILS: 'Emails',
   SCHEDULED_EMAILS: 'Scheduled Emails',
   DRAFTS: 'Drafts',
@@ -51,6 +53,7 @@ export const LABELS = {
   TO: 'To',
   SUBJECT: 'Subject',
   BODY: 'Body',
+  PROMPT: 'Prompt',
 
   ADD_NEW_COMPANY: 'Add New Company',
   ADD_NEW_CONTACT: 'Add New Contact',
@@ -117,4 +120,7 @@ export const PLACEHOLDERS = {
   RECIPIENTS: 'Enter Recipients',
   FONT_FAMILY: 'Font Family',
   ALIGNMENT: 'Align',
+  CONTACTS: 'Select Contacts',
+  SENDER: 'Select Sender',
+  EMAIL_PROMPT: 'Enter Email Prompt',
 }

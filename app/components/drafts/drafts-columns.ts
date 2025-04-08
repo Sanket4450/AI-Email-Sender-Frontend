@@ -15,6 +15,7 @@ export const draftColumns: ColumnDef<Draft>[] = [
   {
     id: 'scheduledAt',
     header: 'Scheduled At',
+    minWidth: 105,
     cell: ({ row }) =>
       row.scheduledAt ? formatDate(row.scheduledAt) : CONSTANTS.NA,
   },

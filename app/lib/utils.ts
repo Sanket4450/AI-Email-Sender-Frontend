@@ -13,6 +13,7 @@ export function formatDate(
   date: string | Date,
   format: string = VALUES.COMMON_DATE_FORMAT
 ) {
+  date = typeof date === 'string' ? date + 'Z' : date
   return moment(date).format(format)
 }
 

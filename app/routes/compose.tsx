@@ -12,12 +12,12 @@ import {
   GenerateEmailSchema,
 } from '~/schemas/email'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
-import { safeExecute } from '~/lib/utils'
-import { SUCCESS_MSG } from '~/lib/messages'
+import { formatEditorContent, safeExecute } from '~/lib/utils'
+import { ERROR_MSG, SUCCESS_MSG } from '~/lib/messages'
 import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
 import { fetchTags } from '~/api/tags'
 import { Tag } from '~/types/tag'
-import { ActionBtn, SubmitBtn } from '~/components/shared/ui/buttons'
+import { ActionBtn, CancelBtn, SubmitBtn } from '~/components/shared/ui/buttons'
 import { RichEditor } from '~/components/shared/rich-text-editor'
 import { CONSTANTS, REQ_METHODS } from '~/lib/constants'
 import { FormActionWrapper } from '~/components/shared/ui/form-action-wrapper'
@@ -35,6 +35,8 @@ import { Sender } from '~/types/sender'
 import { CommonSelectMenu } from '~/components/shared/form/common-select-menu'
 import { GenerateEmailFields } from '~/components/emails/generate-email-fields'
 import { VALUES } from '~/lib/values'
+import { addDraft } from '~/api/drafts'
+import { addEmail } from '~/api/emails'
 // import { baseURL } from '~/api'
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL
@@ -102,13 +104,33 @@ export async function action({
         result: await fetchSendersData(),
       }
 
-    case ResourceAction.ADD_COMPANY:
+    case ResourceAction.ADD_DRAFT:
       return await safeExecute(async () => {
-        await addCompany(data)
+        await addDraft(data)
         return {
           success: true,
-          action: ResourceAction.ADD_COMPANY,
-          message: SUCCESS_MSG.COMPANY_ADDED,
+          action: ResourceAction.ADD_DRAFT,
+          message: SUCCESS_MSG.EMAIL_SAVED,
+        }
+      })
+
+    case ResourceAction.SCHEDULE_EMAIL:
+      return await safeExecute(async () => {
+        await addDraft(data)
+        return {
+          success: true,
+          action: ResourceAction.SCHEDULE_EMAIL,
+          message: SUCCESS_MSG.EMAIL_SCHEDULED,
+        }
+      })
+
+    case ResourceAction.SEND_EMAIL:
+      return await safeExecute(async () => {
+        await addEmail(data)
+        return {
+          success: true,
+          action: ResourceAction.SEND_EMAIL,
+          message: SUCCESS_MSG.EMAIL_SENT,
         }
       })
 
@@ -119,9 +141,9 @@ export async function action({
 
 export default function AddCompanyPage() {
   const fetcher = useFetcher<Response>()
+  const contactsFetcher = useFetcher<Response>()
   const tagsFetcher = useFetcher<Response>()
   const sendersFetcher = useFetcher<Response>()
-  const generateEmailFetcher = useFetcher<Response>()
 
   // Local States
   const [contacts, setContacts] = useState<Contact[]>([])
@@ -151,20 +173,30 @@ export default function AddCompanyPage() {
     [tags]
   )
 
+  const senderOptions: SelectOption[] = useMemo(
+     () => senders.map((t) => ({ value: t.id, label: t.displayName })),
+     [senders]
+   )
+
   useEffect(() => {
     if (fetcher.data) {
       if (fetcher.data.success) {
         const { action } = fetcher.data
 
         switch (action) {
-          case ResourceAction.CONTACTS_REFETCH:
-            setContacts(fetcher.data.result.data)
-            setTotalContactsCount(fetcher.data.result.count)
+          case ResourceAction.ADD_DRAFT:
+            toast.success(SUCCESS_MSG.EMAIL_SAVED)
+            navigate('/drafts')
             break
 
-          case ResourceAction.ADD_COMPANY:
-            toast.success(SUCCESS_MSG.COMPANY_ADDED)
-            navigate(-1)
+          case ResourceAction.SCHEDULE_EMAIL:
+            toast.success(SUCCESS_MSG.EMAIL_SCHEDULED)
+            navigate('/drafts')
+            break
+
+          case ResourceAction.SEND_EMAIL:
+            toast.success(SUCCESS_MSG.EMAIL_SENT)
+            navigate('/emails')
             break
 
           default:
@@ -175,6 +207,17 @@ export default function AddCompanyPage() {
       }
     }
   }, [fetcher.data])
+
+  useEffect(() => {
+    if (contactsFetcher.data) {
+      if (contactsFetcher.data.success) {
+        setContacts(contactsFetcher.data.result.data)
+        setTotalContactsCount(contactsFetcher.data.result.count)
+      } else {
+        toast.error(contactsFetcher.data.message)
+      }
+    }
+  }, [contactsFetcher.data])
 
   useEffect(() => {
     if (tagsFetcher.data) {
@@ -199,7 +242,7 @@ export default function AddCompanyPage() {
   }, [sendersFetcher.data])
 
   useEffect(() => {
-    fetcher.submit(
+    contactsFetcher.submit(
       { action: ResourceAction.CONTACTS_REFETCH },
       { method: 'POST', encType: 'application/json' }
     )
@@ -231,12 +274,29 @@ export default function AddCompanyPage() {
     },
   })
 
-  const validateGenerateEmailForm = async () => {
+  const validateGenerateEmailForm = () => {
     return generateeEmailForm.trigger()
   }
 
-  const validateComposeEmailForm = async () => {
+  const validateComposeEmailForm = () => {
     return composeEmailForm.trigger()
+  }
+
+  const validateEmailPayload = () => {
+    if (!content) {
+      toast.error(ERROR_MSG.EMAIL_BODY_NOT_EMPTY)
+      return false
+    }
+    if (!selectedContacts.length) {
+      toast.error(ERROR_MSG.SELECT_CONTACTS)
+      return false
+    }
+    if (!selectedSender) {
+      toast.error(ERROR_MSG.SELECT_SENDER)
+      return false
+    }
+
+    return true
   }
 
   const processEmailResponse = (response: string) => {
@@ -288,15 +348,41 @@ export default function AddCompanyPage() {
     }
   }
 
+  const handleCancel = () => {
+    navigate(-1)
+  }
+
+  const getPayload = () => {
+    const values = composeEmailForm.getValues()
+
+    const payload: any = {
+      ...values,
+    }
+
+    if (content) {
+      payload.body = formatEditorContent(content)
+    }
+    if (selectedContacts.length) {
+      payload.contactIds = selectedContacts
+    }
+    if (selectedSender) {
+      payload.senderId = selectedSender
+    }
+    if (selectedTags.length) {
+      payload.tags = selectedTags
+    }
+
+    return payload
+  }
+
   const handleSaveDraft = async () => {
     if (await validateComposeEmailForm()) {
-      const values = composeEmailForm.getValues()
+      const payload = getPayload()
 
       fetcher.submit(
         {
-          action: ResourceAction.ADD_COMPANY,
-          ...values,
-          ...(selectedTags.length && { tags: selectedTags }),
+          action: ResourceAction.ADD_DRAFT,
+          ...payload,
         },
         { method: 'POST', encType: 'application/json' }
       )
@@ -304,14 +390,13 @@ export default function AddCompanyPage() {
   }
 
   const handleScheduleEmail = async () => {
-    if (await validateComposeEmailForm()) {
-      const values = composeEmailForm.getValues()
+    if ((await validateComposeEmailForm()) && validateEmailPayload()) {
+      const payload = getPayload()
 
       fetcher.submit(
         {
-          action: ResourceAction.ADD_COMPANY,
-          ...values,
-          ...(selectedTags.length && { tags: selectedTags }),
+          action: ResourceAction.SCHEDULE_EMAIL,
+          ...payload,
         },
         { method: 'POST', encType: 'application/json' }
       )
@@ -319,14 +404,13 @@ export default function AddCompanyPage() {
   }
 
   const handleSendEmail = async () => {
-    if (await validateComposeEmailForm()) {
-      const values = composeEmailForm.getValues()
+    if ((await validateComposeEmailForm()) && validateEmailPayload()) {
+      const payload = getPayload()
 
       fetcher.submit(
         {
-          action: ResourceAction.ADD_COMPANY,
-          ...values,
-          ...(selectedTags.length && { tags: selectedTags }),
+          action: ResourceAction.SEND_EMAIL,
+          ...payload,
         },
         { method: 'POST', encType: 'application/json' }
       )
@@ -339,6 +423,8 @@ export default function AddCompanyPage() {
       <header className="flex items-center gap-2 w-full pb-4">
         <h1 className="text-2xl font-bold">{LABELS.COMPOSE}</h1>
         <FormActionWrapper>
+          <CancelBtn onClick={handleCancel} />
+
           <Button
             variant="outline"
             className="flex items-center gap-2"
@@ -375,7 +461,17 @@ export default function AddCompanyPage() {
               label={LABELS.CONTACTS}
               placeholder={PLACEHOLDERS.CONTACTS}
               onChange={setSelectedContacts}
-              readOnly={fetcher.state === 'loading'}
+              readOnly={contactsFetcher.state === 'loading'}
+            />
+
+            {/* Select Sender */}
+            <CommonSelectMenu
+              data={senderOptions}
+              selectedOption={selectedSender}
+              label={LABELS.SENDER}
+              placeholder={PLACEHOLDERS.SENDER}
+              onChange={setSelectedSender}
+              readOnly={sendersFetcher.state === 'loading'}
             />
 
             {/* Select Tags */}
@@ -386,16 +482,6 @@ export default function AddCompanyPage() {
               placeholder={PLACEHOLDERS.TAGS}
               onChange={setSelectedTags}
               readOnly={tagsFetcher.state === 'loading'}
-            />
-
-            {/* Select Sender */}
-            <CommonSelectMenu
-              data={tagOptions}
-              selectedOption={selectedSender}
-              label={LABELS.SENDER}
-              placeholder={PLACEHOLDERS.SENDER}
-              onChange={setSelectedSender}
-              readOnly={sendersFetcher.state === 'loading'}
             />
 
             {/* Form */}

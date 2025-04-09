@@ -3,8 +3,11 @@ export const ERROR_MSG = {
   INTERNAL_SERVER_ERROR: 'Internal server error',
   SOMETHING_WENT_WRONG: 'Something Went Wrong!',
   INVALID_URL: 'Invalid URL',
-}
 
+  SELECT_CONTACTS: 'Please select at least one contact',
+  SELECT_SENDER: 'Please select a sender',
+  EMAIL_BODY_NOT_EMPTY: 'Email body cannot be empty',
+}
 
 export const INFO_MSG = {
   TOGGLE_THEME: 'Toggle Theme',
@@ -68,4 +71,9 @@ export const SUCCESS_MSG = {
   DRAFT_DELETED: 'Draft deleted successfully',
   SENDER_DELETED: 'Sender deleted successfully',
   SCHEDULED_EMAIL_DELETED: 'Scheduled email deleted successfully',
+
+  EMAIL_SAVED: 'Email saved as draft.',
+  EMAIL_SCHEDULED: 'Email scheduled successfully',
+  EMAIL_SENT: 'Email sent successfully',
+  EMAIL_GENERATED: 'Email generated successfully',
 }

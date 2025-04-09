@@ -28,7 +28,7 @@ export default function Sidebar() {
         }}
         onMouseEnter={() => setIsExpanded(true)}
         onMouseLeave={() => setIsExpanded(false)}>
-        <nav className="space-y-2">
+        <nav className="space-y-3">
           {NAVBAR_ITEMS.map((item) => (
             <NavLink
               key={item.label}

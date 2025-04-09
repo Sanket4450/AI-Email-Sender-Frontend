@@ -12,8 +12,6 @@ import {
   GenerateEmailSchema,
 } from '~/schemas/email'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
-import { PageTitle } from '~/components/layout/page-title'
-import { Company } from '~/types/company'
 import { safeExecute } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
 import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
@@ -23,8 +21,8 @@ import { ActionBtn, SubmitBtn } from '~/components/shared/ui/buttons'
 import { RichEditor } from '~/components/shared/rich-text-editor'
 import { CONSTANTS, REQ_METHODS } from '~/lib/constants'
 import { FormActionWrapper } from '~/components/shared/ui/form-action-wrapper'
-import { Card, CardContent, CardFooter, CardHeader } from '~/components/ui/card'
-import { Clock, Save, Send } from 'lucide-react'
+import { Card, CardContent, CardFooter } from '~/components/ui/card'
+import { Clock, Save, Send, WandSparkles } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import { ComposeEmailFields } from '~/components/emails/compose-email-fields'
 import { Form } from '~/components/ui/form'
@@ -36,6 +34,7 @@ import { fetchSenders } from '~/api/senders'
 import { Sender } from '~/types/sender'
 import { CommonSelectMenu } from '~/components/shared/form/common-select-menu'
 import { GenerateEmailFields } from '~/components/emails/generate-email-fields'
+import { VALUES } from '~/lib/values'
 // import { baseURL } from '~/api'
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL
@@ -214,6 +213,10 @@ export default function AddCompanyPage() {
     )
   }, [])
 
+  useEffect(() => {
+    if (generatedResponse) processEmailResponse(generatedResponse)
+  }, [generatedResponse])
+
   const generateeEmailForm = useForm<GenerateEmail>({
     resolver: zodResolver(GenerateEmailSchema),
     defaultValues: {
@@ -236,6 +239,24 @@ export default function AddCompanyPage() {
     return composeEmailForm.trigger()
   }
 
+  const processEmailResponse = (response: string) => {
+    if (response.includes(VALUES.SUBJECT_IDENFIFIER)) {
+      let subject = response.split(VALUES.SUBJECT_IDENFIFIER)[1].trim()
+
+      const bodyIndex = subject.indexOf(VALUES.BODY_IDENFIFIER)
+      if (bodyIndex !== -1) {
+        subject = subject.substring(0, bodyIndex).trim()
+
+        const body = response.split(VALUES.BODY_IDENFIFIER)[1].trim()
+        setContent(body)
+      }
+      composeEmailForm.setValue('subject', subject)
+    } else {
+      composeEmailForm.setValue('subject', '')
+      setContent('')
+    }
+  }
+
   const handleGenerateEmail = async () => {
     if (await validateGenerateEmailForm()) {
       const values = generateeEmailForm.getValues()
@@ -254,14 +275,13 @@ export default function AddCompanyPage() {
           responseType: 'stream',
           onDownloadProgress: (progressEvent) => {
             const chunk = progressEvent.event.target.response
-            console.log(chunk)
-            setContent((prevContent) => prevContent + chunk)
+            if (chunk) setGeneratedResponse((prev) => (prev += chunk))
           },
         })
 
-        console.log('final response ---------------->', response.data)
-      } catch (error) {
-        console.log('error occured on generate email', error)
+        setGeneratedResponse(response.data)
+      } catch (error: any) {
+        toast.error(error.data?.message || error.message)
       } finally {
         setGeneratingResponse(false)
       }
@@ -391,14 +411,18 @@ export default function AddCompanyPage() {
           <CardFooter>
             <ActionBtn
               isLoading={generatingResponse}
-              child={LABELS.GENERATE_EMAIL}
+              child={
+                <div className="flex items-center gap-2">
+                  <WandSparkles /> {LABELS.GENERATE_EMAIL}
+                </div>
+              }
               onClick={handleGenerateEmail}
             />
           </CardFooter>
         </Card>
 
         {/* Right (Preview) Section */}
-        <Card className="flex-1 h-full flex flex-col">
+        <Card className="flex-1 min-h-0 h-full flex flex-col">
           <CardContent className="flex-1 min-h-0 flex flex-col gap-y-3 p-5 py-4">
             {/* Compose Email Form */}
             <Form {...composeEmailForm}>
@@ -408,11 +432,13 @@ export default function AddCompanyPage() {
             </Form>
 
             <Label className="w-full">{LABELS.BODY}</Label>
-            <RichEditor
-              placeholder={PLACEHOLDERS.EMAIL_BODY}
-              initialValue={content}
-              onChange={setContent}
-            />
+            <div className="flex-1 min-h-0">
+              <RichEditor
+                placeholder={PLACEHOLDERS.EMAIL_BODY}
+                initialValue={content}
+                onChange={setContent}
+              />
+            </div>
           </CardContent>
         </Card>
       </main>

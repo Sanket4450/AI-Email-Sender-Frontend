@@ -39,3 +39,19 @@ export async function safeExecute(fn: () => Promise<Response>): Promise<Response
 export function formatStringArray<T>(data: T[], key: string) {
   return data.map((d) => d[key as keyof T]).join(', ')
 }
+
+
+export const formatEditorContent = (htmlStr: string) => {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(htmlStr, 'text/html')
+
+  const paragraphs = doc.querySelectorAll('p')
+
+  paragraphs.forEach((p) => {
+    const div = doc.createElement('div')
+    div.innerHTML = p.innerHTML
+    p.replaceWith(div)
+  })
+
+  return doc.body.innerHTML
+}

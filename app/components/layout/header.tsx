@@ -14,7 +14,7 @@ import { Link } from '@remix-run/react'
 export default function Header() {
   return (
     <header
-      className="sticky top-0 flex items-center justify-between p-4 border-b border-border"
+      className="fixed top-0 w-full flex items-center justify-between p-4 border-b border-border"
       style={{ height: VALUES.HEADER_HEIGHT }}>
       <Link
         to="/"

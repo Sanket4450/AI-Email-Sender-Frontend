@@ -17,7 +17,7 @@ export const EmailEventTracker = ({ data }: EmailEventTrackerProps) => {
   }))
 
   return (
-    <div className="flex items-center px-2">
+    <div className="flex justify-center items-center px-2">
       {steps.map((step, index) => (
         <Fragment key={step.id}>
           {/* Circle Indicator */}

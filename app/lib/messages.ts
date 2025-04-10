@@ -7,6 +7,7 @@ export const ERROR_MSG = {
   SELECT_CONTACTS: 'Please select at least one contact',
   SELECT_SENDER: 'Please select a sender',
   EMAIL_BODY_NOT_EMPTY: 'Email body cannot be empty',
+  ESP_NOT_SELECTED: 'Please select an ESP',
 }
 
 export const INFO_MSG = {

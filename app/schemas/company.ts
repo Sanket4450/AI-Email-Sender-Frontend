@@ -1,11 +1,14 @@
 import { z } from 'zod'
+import { str, str_required } from './common'
 
 export const ModifyCompanySchema = z.object({
-  title: z.string().min(3, { message: 'Title must be at least 3 characters.' }),
-  description: z.string().optional(),
-  location: z
-    .string()
-    .min(3, { message: 'Location must be at least 3 characters.' }),
+  title: str_required.min(1, {
+    message: 'Title is required.',
+  }),
+  description: str,
+  location: str_required.min(1, {
+    message: 'Location is required.',
+  }),
 })
 
 export type ModifyCompany = z.infer<typeof ModifyCompanySchema>

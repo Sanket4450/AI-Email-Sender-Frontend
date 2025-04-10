@@ -1,20 +1,21 @@
 import { z } from 'zod'
+import { str, str_required } from './common'
+import { REGEX } from '~/lib/constants'
 
-// Define the Zod schema for CommonContactDto
 export const ModifyContactSchema = z.object({
-  name: z.string().min(1, { message: 'Name is required.' }), // Equivalent to @IsString() and @IsNotEmpty()
-  position: z.string().min(1, { message: 'Position is required.' }), // Equivalent to @IsString() and @IsNotEmpty()
-  email: z.string().email({ message: 'Invalid email format.' }), // Equivalent to @IsString(), @IsNotEmpty(), and @IsEmail()
-  phone: z
-    .string()
-    .optional() // Equivalent to @IsOptional()
-    .refine(
-      (value) =>
-        value === undefined || (value.length === 10 && /^[0-9]+$/.test(value)),
-      { message: 'Phone must be exactly 10 digits.' }
-    ), // Equivalent to @MinLength(10), @MaxLength(10), and custom validation
-  linkedInUrl: z.string().optional(), // Equivalent to @IsOptional() and @IsString()
-  location: z.string().optional(), // Equivalent to @IsOptional() and @IsString()
+  name: str_required.min(1, { message: 'Name is required.' }),
+  position: str_required.min(1, { message: 'Position is required.' }),
+  email: str_required.min(1, { message: 'Email is required.' }).email({ message: 'Invalid email format.' }),
+  phone: str.refine((value) => !value || REGEX.MOBILE.test(value), {
+    message: 'Phone Number must be exactly 10 digits.',
+  }),
+  linkedInUrl: str.refine(
+    (value) => !value || REGEX.LINKED_IN_URL.test(value),
+    {
+      message: 'Not a valid LinkedIn URL.',
+    }
+  ),
+  location: str,
 })
 
 export type ModifyContact = z.infer<typeof ModifyContactSchema>

@@ -18,6 +18,7 @@ import { Tag } from '~/types/tag'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
 import { SubmitBtn } from '~/components/shared/ui/buttons'
 import { ModifyContactFields } from '~/components/contacts/modify-contact-fields'
+import { ActionFunctionArgs } from '@remix-run/node'
 
 interface AddContactRequest extends Contact, Filter {
   action: ResourceAction
@@ -25,9 +26,7 @@ interface AddContactRequest extends Contact, Filter {
 
 export async function action({
   request,
-}: {
-  request: Request
-}): Promise<Response | null> {
+}: ActionFunctionArgs): Promise<Response | null> {
   const { action, search, page, ...data }: AddContactRequest =
     await request.json()
 

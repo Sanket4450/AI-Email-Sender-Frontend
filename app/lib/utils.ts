@@ -25,7 +25,17 @@ export function normalizeCredential(str: string) {
   return str.replace(/\s+/g, '').toLowerCase()
 }
 
-export async function safeExecute(fn: () => Promise<Response>): Promise<Response> {
+export const sanitizeObj = <T extends object>(obj: T): Partial<T> => {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([_key, value]) => {
+      return value !== undefined && value !== null && value !== ''
+    })
+  ) as Partial<T>
+}
+
+export async function safeExecute(
+  fn: () => Promise<Response>
+): Promise<Response> {
   try {
     const result = await fn()
     return result
@@ -40,7 +50,6 @@ export async function safeExecute(fn: () => Promise<Response>): Promise<Response
 export function formatStringArray<T>(data: T[], key: string) {
   return data.map((d) => d[key as keyof T]).join(', ')
 }
-
 
 export const formatEditorContent = (htmlStr: string) => {
   const parser = new DOMParser()

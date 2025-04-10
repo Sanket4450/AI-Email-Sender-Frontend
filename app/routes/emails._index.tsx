@@ -18,7 +18,7 @@ import { VALUES } from '~/lib/values'
 import { PageTitle } from '~/components/layout/page-title'
 import { TableHeaderSection } from '~/components/shared/table/table-header-section'
 import { toast } from 'sonner'
-import { LoaderFunctionArgs } from '@remix-run/node'
+import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { CONSTANTS } from '~/lib/constants'
 import { ActionBtn, CancelBtn } from '~/components/shared/ui/buttons'
 import { emailColumns } from '~/components/emails/email-columns'
@@ -52,9 +52,7 @@ export async function loader({
 
 export async function action({
   request,
-}: {
-  request: Request
-}): Promise<Response | null> {
+}: ActionFunctionArgs): Promise<Response | null> {
   const { action }: EmailsRequest = await request.json()
 
   switch (action) {

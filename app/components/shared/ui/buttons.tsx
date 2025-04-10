@@ -73,10 +73,6 @@ export const SubmitBtn = ({
       type="submit"
       form={name}
       disabled={isLoading}
-      onClick={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-      }}
       className={cn(
         'bg-primary hover:bg-primary-foreground text-white font-bold py-2 px-4 rounded',
         className

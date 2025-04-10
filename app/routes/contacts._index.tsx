@@ -23,7 +23,7 @@ import { TableHeaderSection } from '~/components/shared/table/table-header-secti
 import { DeleteContactModal } from '~/components/contacts/delete-contact-modal'
 import { toast } from 'sonner'
 import { SUCCESS_MSG } from '~/lib/messages'
-import { LoaderFunctionArgs } from '@remix-run/node'
+import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { CONSTANTS } from '~/lib/constants'
 import { ActionBtn, CancelBtn } from '~/components/shared/ui/buttons'
 import { contactColumns } from '~/components/contacts/contact-columns'
@@ -57,9 +57,7 @@ export async function loader({
 
 export async function action({
   request,
-}: {
-  request: Request
-}): Promise<Response | null> {
+}: ActionFunctionArgs): Promise<Response | null> {
   const { action, id }: ContactsRequest = await request.json()
 
   switch (action) {

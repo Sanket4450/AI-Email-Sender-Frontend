@@ -9,6 +9,8 @@ import {
   Users,
 } from 'lucide-react'
 import { LABELS, NAMES } from './form'
+import { SelectOption } from '~/types/common'
+import { ESPS } from './constants'
 
 interface NavbarItem {
   label: string
@@ -43,3 +45,10 @@ export const COMMON_DATA_ACTIONS: CommonDataActionsType[] = [
     icon: <Trash color="red" />,
   },
 ]
+
+export const ESP_OPTIONS: SelectOption[] = Object.entries(ESPS).map(
+  ([value, label]) => ({
+    value,
+    label,
+  })
+)

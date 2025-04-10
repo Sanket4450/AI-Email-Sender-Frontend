@@ -37,6 +37,7 @@ import { GenerateEmailFields } from '~/components/emails/generate-email-fields'
 import { VALUES } from '~/lib/values'
 import { addDraft } from '~/api/drafts'
 import { addEmail } from '~/api/emails'
+import { ActionFunctionArgs } from '@remix-run/node'
 // import { baseURL } from '~/api'
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL
@@ -47,9 +48,7 @@ interface AddCompanyRequest extends Filter {
 
 export async function action({
   request,
-}: {
-  request: Request
-}): Promise<Response | null> {
+}: ActionFunctionArgs): Promise<Response | null> {
   const { action, search, page, ...data }: AddCompanyRequest =
     await request.json()
 

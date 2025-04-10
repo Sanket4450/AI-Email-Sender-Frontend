@@ -27,7 +27,7 @@ import { TableHeaderSection } from '~/components/shared/table/table-header-secti
 import { DeleteSenderModal } from '~/components/senders/delete-sender-modal'
 import { toast } from 'sonner'
 import { SUCCESS_MSG } from '~/lib/messages'
-import { LoaderFunctionArgs } from '@remix-run/node'
+import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { CONSTANTS } from '~/lib/constants'
 import { ActionBtn, CancelBtn } from '~/components/shared/ui/buttons'
 import { senderColumns } from '~/components/senders/senders-columns'
@@ -63,9 +63,7 @@ export async function loader({
 
 export async function action({
   request,
-}: {
-  request: Request
-}): Promise<Response | null> {
+}: ActionFunctionArgs): Promise<Response | null> {
   const { action, id }: SendersRequest = await request.json()
 
   switch (action) {

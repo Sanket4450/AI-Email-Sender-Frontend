@@ -1,0 +1,16 @@
+import { z } from 'zod'
+
+export const str_required = z.string()
+export const str = str_required.optional()
+export const num_required = z.number()
+export const num = num_required.optional()
+export const int_required = z.number().int()
+export const int = int_required.optional()
+export const bool_required = z.boolean()
+export const bool = bool_required.optional()
+export const date_required = z.date()
+export const date = date_required.optional()
+export const url_required = z.string().url()
+export const url = url_required.optional()
+export const uuid_required = z.string().uuid()
+export const uuid = uuid_required.optional()

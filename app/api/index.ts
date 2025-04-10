@@ -28,17 +28,18 @@ export async function apiCall({
         ...headers,
       },
       data: method !== REQ_METHODS.GET ? JSON.stringify(body) : undefined,
+      validateStatus: (_) => true,
     })
 
     const data = response.data
 
     if (!data?.success) {
-      throw new Error(data)
+      throw new Error(data.message)
     }
 
     return data
   } catch (error: any) {
     console.error(`API Error: ${error}`)
-    throw new Error(error)
+    throw new Error(error.message)
   }
 }

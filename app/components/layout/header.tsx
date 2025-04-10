@@ -8,7 +8,7 @@ import {
 } from '../ui/dropdown-menu'
 import { VALUES } from '~/lib/values'
 import { CONSTANTS } from '~/lib/constants'
-import { ModeToggle } from '../mode-toggle'
+import { ModeToggle } from './mode-toggle'
 import { Link } from '@remix-run/react'
 
 export default function Header() {

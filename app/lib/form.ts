@@ -24,6 +24,11 @@ export const NAMES = {
   SUBJECT: 'subject',
   IMAGE_UPLOAD: 'imageUpload',
   PROMPT: 'prompt',
+  DISPLAY_NAME: 'displayName',
+  ESP: 'esp',
+  API_KEY: 'apiKey',
+  PRIORITY: 'priority',
+  TARGET: 'target',
 }
 
 export const LABELS = {
@@ -55,6 +60,13 @@ export const LABELS = {
   SUBJECT: 'Subject',
   BODY: 'Body',
   PROMPT: 'Prompt',
+  DISPLAY_NAME: 'Display Name',
+  NAME: 'Name',
+  API_KEY: 'API Key',
+  PRIORITY: 'Priority',
+  TARGET: 'Target',
+  ESP: 'ESP',
+  PROVIDER: 'Provider',
 
   ADD_NEW_COMPANY: 'Add New Company',
   ADD_NEW_CONTACT: 'Add New Contact',
@@ -124,4 +136,11 @@ export const PLACEHOLDERS = {
   CONTACTS: 'Select Contacts',
   SENDER: 'Select Sender',
   EMAIL_PROMPT: 'Enter Email Prompt',
+  DISPLAY_NAME: 'Enter Display Name',
+  NAME: 'Enter Name',
+  API_KEY: 'Enter API Key',
+  PRIORITY: 'Enter Priority',
+  TARGET: 'Enter Target',
+  ESP: 'Select ESP',
+  PROVIDER: 'Select Provider',
 }

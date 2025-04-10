@@ -86,3 +86,43 @@ export const COMPOSE_EMAIL_FIELDS: FormField[] = [
     type: INPUT_TYPES.TEXT,
   },
 ]
+
+
+export const MODIFY_SENDER_FIELDS: FormField[] = [
+  {
+    name: NAMES.DISPLAY_NAME,
+    label: LABELS.DISPLAY_NAME,
+    placeholder: PLACEHOLDERS.DISPLAY_NAME,
+    type: INPUT_TYPES.TEXT,
+  },
+  {
+    name: NAMES.NAME,
+    label: LABELS.NAME,
+    placeholder: PLACEHOLDERS.NAME,
+    type: INPUT_TYPES.TEXT,
+  },
+  {
+    name: NAMES.EMAIL,
+    label: LABELS.EMAIL,
+    placeholder: PLACEHOLDERS.EMAIL,
+    type: INPUT_TYPES.EMAIL,
+  },
+  {
+    name: NAMES.API_KEY,
+    label: LABELS.API_KEY,
+    placeholder: PLACEHOLDERS.API_KEY,
+    type: INPUT_TYPES.TEXT,
+  },
+  {
+    name: NAMES.PRIORITY,
+    label: LABELS.PRIORITY,
+    placeholder: PLACEHOLDERS.PRIORITY,
+    type: INPUT_TYPES.NUMBER,
+  },
+  {
+    name: NAMES.TARGET,
+    label: LABELS.TARGET,
+    placeholder: PLACEHOLDERS.TARGET,
+    type: INPUT_TYPES.NUMBER,
+  },
+]

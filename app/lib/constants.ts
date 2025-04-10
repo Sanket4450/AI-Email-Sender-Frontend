@@ -71,6 +71,17 @@ export const EMAIL_EVENTS = {
   CLICKED: 'clicked',
 } as const
 
+
+export const REGEX = {
+  UNSIGNED_INT: /^\d+$/,
+  INT: /^-?\d+$/,
+  UNSIGNED_FLOAT: /^\d+(\.\d+)?$/,
+  FLOAT: /^-?\d+(\.\d+)?$/,
+  MOBILE: /^\d{10}$/,
+  LINKED_IN_URL:
+    /^(?:https:\/\/)?(?:www\.)?linkedin\.com\/(?:in|company)\/[a-zA-Z0-9_-]+\/?$/,
+} as const
+
 // Rich Text Editor
 export const HEADERS = [
   { value: '1', label: 'H1' },

@@ -22,6 +22,8 @@ import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { CONSTANTS } from '~/lib/constants'
 import { ActionBtn, CancelBtn } from '~/components/shared/ui/buttons'
 import { emailColumns } from '~/components/emails/email-columns'
+import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
+import { EMAIL_EVENT_OPTIONS } from '~/lib/data'
 
 interface EmailsRequest {
   action: ResourceAction
@@ -80,6 +82,7 @@ export default function EmailsPage() {
   const [emails, setEmails] = useState<Email[]>([])
   const [totalCount, setTotalCount] = useState(0)
   const [searchText, setSearchText] = useState(urlSearch)
+  const [selectedEvents, setSelectedEvents] = useState<string[]>([])
 
   const navigate = useNavigate()
 
@@ -149,6 +152,17 @@ export default function EmailsPage() {
           />
 
           <div className="flex items-center gap-3">
+            <CommonMultiSelectMenu
+              data={EMAIL_EVENT_OPTIONS}
+              label={LABELS.EVENTS}
+              placeholder={PLACEHOLDERS.EVENTS}
+              selectedOptions={selectedEvents}
+              onChange={setSelectedEvents}
+              includeLabel={false}
+              showSelectedLabels={false}
+              readOnly={fetcher.state === 'loading'}
+            />
+
             <CancelBtn
               child={CONSTANTS.RESET}
               onClick={resetFilter}

@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import { LABELS, NAMES } from './form'
 import { SelectOption } from '~/types/common'
-import { ESPS } from './constants'
+import { EMAIL_EVENTS, ESPS } from './constants'
 
 interface NavbarItem {
   label: string
@@ -52,3 +52,11 @@ export const ESP_OPTIONS: SelectOption[] = Object.entries(ESPS).map(
     label,
   })
 )
+
+
+export const EMAIL_EVENT_OPTIONS: SelectOption[] = Object.values(
+  EMAIL_EVENTS
+).map((event) => ({
+  value: event,
+  label: LABELS[event],
+}))

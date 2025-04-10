@@ -44,6 +44,7 @@ export const LABELS = {
   SEND: 'Send',
   SEND_NOW: 'Send Now',
   GENERATE_EMAIL: 'Generate Email',
+  EVENTS: 'Events',
 
   COMPANIES: 'Companies',
   CONTACTS: 'Contacts',
@@ -105,6 +106,11 @@ export const LABELS = {
   PHONE: 'Phone',
   LINKEDIN_URL: 'LinkedIn URL',
   LOCATION: 'Location',
+
+  processed: 'Processed',
+  delivered: 'Delivered',
+  opened: 'Opened',
+  clicked: 'Clicked',
 }
 
 export const PLACEHOLDERS = {
@@ -143,4 +149,5 @@ export const PLACEHOLDERS = {
   TARGET: 'Enter Target',
   ESP: 'Select ESP',
   PROVIDER: 'Select Provider',
+  EVENTS: 'Select Events',
 }

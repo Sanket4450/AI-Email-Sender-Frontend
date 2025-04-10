@@ -32,6 +32,7 @@ import { CONSTANTS } from '~/lib/constants'
 import { ActionBtn, CancelBtn } from '~/components/shared/ui/buttons'
 import { senderColumns } from '~/components/senders/senders-columns'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
+import { EmailEventTracker } from '~/components/emails/email-event-tracker'
 
 interface SendersRequest {
   action: ResourceAction
@@ -232,6 +233,13 @@ export default function SendersPage() {
     ],
     []
   )
+
+  const data = {
+    processed: true,
+    delivered: true,
+    opened: false,
+    clicked: false,
+  }
 
   return (
     <>

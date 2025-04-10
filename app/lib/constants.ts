@@ -65,12 +65,11 @@ export const ESPS: Record<ESP, string> = {
 } as const
 
 export const EMAIL_EVENTS = {
-  PROCESSED: 'processed',
-  DELIVERED: 'delivered',
-  OPENED: 'opened',
-  CLICKED: 'clicked',
+  processed: 'processed',
+  delivered: 'delivered',
+  opened: 'opened',
+  clicked: 'clicked',
 } as const
-
 
 export const REGEX = {
   UNSIGNED_INT: /^\d+$/,
@@ -108,7 +107,6 @@ export const FONTS = [
   { value: 'Verdana', label: 'Verdana' },
   { value: 'monospace', label: 'monospace' },
 ]
-
 
 export const TEXT_ALIGNMENTS = [
   {

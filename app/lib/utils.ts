@@ -4,6 +4,8 @@ import moment from 'moment'
 import { ERROR_MSG } from './messages'
 import { VALUES } from './values'
 import { Response } from '~/types/common'
+import { EmailEvent } from '~/types/email'
+import { EMAIL_EVENTS } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -64,4 +66,24 @@ export const formatEditorContent = (htmlStr: string) => {
   })
 
   return doc.body.innerHTML
+}
+
+export const prepareEmailEvents = (events: EmailEvent[]) => {
+  const emailEvents: Record<
+    (typeof EMAIL_EVENTS)[keyof typeof EMAIL_EVENTS],
+    boolean
+  > = {
+    [EMAIL_EVENTS.processed]: false,
+    [EMAIL_EVENTS.delivered]: false,
+    [EMAIL_EVENTS.opened]: false,
+    [EMAIL_EVENTS.clicked]: false,
+  }
+
+  Object.values(EMAIL_EVENTS).forEach((event) => {
+    if (events.some((e) => e.eventType === event)) {
+      emailEvents[event] = true
+    }
+  })
+
+  return emailEvents
 }

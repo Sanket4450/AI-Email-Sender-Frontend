@@ -24,7 +24,7 @@ export const EmailEventTracker = ({ data }: EmailEventTrackerProps) => {
           <div
             className={cn(
               'relative size-7 flex justify-center items-center text-white rounded-full',
-              step.completed ? 'bg-primary' : 'bg-secondary'
+              step.completed ? 'bg-primary' : 'bg-gray'
             )}>
             {step.completed ? (
               <Check

@@ -17,7 +17,7 @@ interface CompaniesTableProps<T> {
 export const DataTable = <T,>({ columns, data }: CompaniesTableProps<T>) => {
   return (
     <Table>
-      <TableHeader className="sticky top-0 bg-background">
+      <TableHeader className="sticky top-0 z-20 bg-background">
         <TableRow>
           {columns.map((c) => (
             <TableHead

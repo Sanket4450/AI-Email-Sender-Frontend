@@ -31,6 +31,7 @@
     --radius: 0.5rem;
 
     --selection: #b3e0ff;
+    --gray: #D7D7D9;
   }
 
   .dark,
@@ -61,6 +62,7 @@
     --chart-5: 340 75% 55%;
 
     --selection: #1e3a8a;
+    --gray: #1E293B;
   }
 }
 

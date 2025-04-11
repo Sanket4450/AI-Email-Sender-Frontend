@@ -18,7 +18,7 @@ export default function Sidebar() {
 
       <div
         className={cn(
-          'h-full fixed z-20 border-r border-border p-4 bg-background'
+          'h-full fixed z-30 border-r border-border p-4 bg-background'
         )}
         style={{
           transition: `width ${VALUES.SIDEBAR_TRANSITION_DURATION} ease-in-out`,

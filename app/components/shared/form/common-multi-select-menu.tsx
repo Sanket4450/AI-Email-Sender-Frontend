@@ -11,6 +11,7 @@ import { NoDataFound } from '../ui/no-data-found'
 import { INFO_MSG } from '~/lib/messages'
 import { CONSTANTS } from '~/lib/constants'
 import { useCallback, useMemo } from 'react'
+import { ClassValue } from 'clsx'
 
 interface MultiSelectMenuProps {
   data: SelectOption[]
@@ -21,7 +22,8 @@ interface MultiSelectMenuProps {
   includeLabel?: boolean
   showSelectedLabels?: boolean
   onChange: (options: string[]) => void
-  labelStyles?: string
+  labelStyles?: ClassValue
+  triggerStyles?: ClassValue
 }
 
 export const CommonMultiSelectMenu = ({
@@ -34,6 +36,7 @@ export const CommonMultiSelectMenu = ({
   includeLabel = true,
   showSelectedLabels = true,
   labelStyles,
+  triggerStyles,
 }: MultiSelectMenuProps) => {
   const selectedOptionLabels = useMemo(
     () =>
@@ -71,7 +74,10 @@ export const CommonMultiSelectMenu = ({
         <PopoverTrigger asChild>
           <button
             type="button"
-            className="w-full rounded-md py-2 px-3 text-sm border border-input focus:border-foreground bg-background text-left focus:outline-none disabled:opacity-50"
+            className={cn(
+              'w-full rounded-md py-2 px-3 text-sm border border-input focus:border-foreground bg-background text-left focus:outline-none disabled:opacity-50',
+              triggerStyles
+            )}
             disabled={readOnly}>
             {selectedOptions.length > 0 ? (
               renderedLabel

@@ -4,6 +4,7 @@ export const VALUES = {
   SEARCH_QUERY_PARAM: 'q',
   PAGE_QUERY_PARAM: 'page',
   ESPS_QUERY_PARAM: 'providers',
+  EVENT_TYPES_QUERY_PARAM: 'events',
   INITIAL_PAGE: 1,
   INITIAL_PAGE_PARAM: '1',
   INITIAL_ESPS_PARAM: '',

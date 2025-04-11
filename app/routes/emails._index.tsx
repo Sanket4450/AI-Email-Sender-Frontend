@@ -42,12 +42,19 @@ export async function loader({
 }: LoaderFunctionArgs): Promise<EmailsResponse> {
   const url = new URL(request.url)
 
+  const selectedEventsStr: string =
+    url.searchParams.get(VALUES.EVENT_TYPES_QUERY_PARAM) || ''
   const search = url.searchParams.get(VALUES.SEARCH_QUERY_PARAM) || ''
   const page = parseInt(
     url.searchParams.get(VALUES.PAGE_QUERY_PARAM) || '1',
     10
   )
-  const { count, data } = await fetchEmails({ search, page })
+
+  const eventTypes: string[] = selectedEventsStr
+    ? selectedEventsStr.split(',')
+    : []
+
+  const { count, data } = await fetchEmails({ eventTypes, search, page })
 
   return { count, data }
 }
@@ -72,9 +79,17 @@ export default function EmailsPage() {
 
   const urlSearch =
     searchParams.get(VALUES.SEARCH_QUERY_PARAM) || VALUES.INITIAL_SEARCH
+
   const page = parseInt(
     searchParams.get(VALUES.PAGE_QUERY_PARAM) || VALUES.INITIAL_PAGE_PARAM
   )
+
+  const selectedEventsStr: string =
+    searchParams.get(VALUES.EVENT_TYPES_QUERY_PARAM) || ''
+
+  const eventTypes: string[] = selectedEventsStr
+    ? selectedEventsStr.split(',')
+    : []
 
   // Global States
 
@@ -82,7 +97,6 @@ export default function EmailsPage() {
   const [emails, setEmails] = useState<Email[]>([])
   const [totalCount, setTotalCount] = useState(0)
   const [searchText, setSearchText] = useState(urlSearch)
-  const [selectedEvents, setSelectedEvents] = useState<string[]>([])
 
   const navigate = useNavigate()
 
@@ -132,6 +146,16 @@ export default function EmailsPage() {
     }
   }, [fetcher.state, fetcher.data])
 
+  const setSelectedEvents = useCallback(
+    (values: string[]) => {
+      setSearchParams((params) => {
+        params.set(VALUES.EVENT_TYPES_QUERY_PARAM, values.join(','))
+        return params
+      })
+    },
+    [setSearchParams]
+  )
+
   const composeEmail = useCallback(() => {
     navigate('/compose')
   }, [navigate])
@@ -156,11 +180,12 @@ export default function EmailsPage() {
               data={EMAIL_EVENT_OPTIONS}
               label={LABELS.EVENTS}
               placeholder={PLACEHOLDERS.EVENTS}
-              selectedOptions={selectedEvents}
+              selectedOptions={eventTypes}
               onChange={setSelectedEvents}
               includeLabel={false}
               showSelectedLabels={false}
               readOnly={fetcher.state === 'loading'}
+              triggerStyles='min-w-28'
             />
 
             <CancelBtn

@@ -3,11 +3,18 @@ import { apiCall } from '.'
 import { VALUES } from '~/lib/values'
 import { DEFAULT_DATA_RESPONSE, REQ_METHODS } from '~/lib/constants'
 
-interface FetchEmails extends Search, Pagination {}
+interface FetchEmails extends Search, Pagination {
+  eventTypes?: string[]
+}
 
-export async function fetchEmails({ search, page = 1 }: FetchEmails) {
+export async function fetchEmails({
+  search,
+  page = 1,
+  eventTypes = [],
+}: FetchEmails) {
   try {
     const body = {
+      eventTypes,
       ...(search && { search }),
       page: String(page),
       limit: String(VALUES.EMAILS_PAGE_SIZE),

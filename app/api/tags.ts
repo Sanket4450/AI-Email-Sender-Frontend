@@ -1,13 +1,18 @@
-import { Pagination, Search } from '~/types/common'
+import { AsOptions, Pagination, Search } from '~/types/common'
 import { apiCall } from '.'
 import { VALUES } from '~/lib/values'
 import { DEFAULT_DATA_RESPONSE, REQ_METHODS } from '~/lib/constants'
 
-interface FetchTags extends Search, Pagination {}
+interface FetchTags extends Search, Pagination, AsOptions {}
 
-export async function fetchTags({ search, page = 1 }: FetchTags) {
+export async function fetchTags({
+  search,
+  page = 1,
+  asOptions = false,
+}: FetchTags) {
   try {
     const params = {
+      ...(asOptions && { asOptions: String(asOptions) }),
       ...(search && { search }),
       page: String(page),
       limit: String(VALUES.TAGS_PAGE_SIZE),

@@ -55,6 +55,11 @@ export interface Search {
   search?: string
 }
 
+
+export interface AsOptions {
+  asOptions?: boolean
+}
+
 export interface Filter extends Search, Pagination {}
 
 export interface ColumnDef<T> {

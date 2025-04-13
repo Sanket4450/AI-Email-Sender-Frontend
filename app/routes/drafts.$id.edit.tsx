@@ -70,6 +70,7 @@ export async function action({
 
   const fetchTagsData = async () => {
     const { count, data } = await fetchTags({
+      asOptions: true,
       search,
       page,
     })
@@ -158,9 +159,9 @@ export default function EditContactPage() {
   const [tags, setTags] = useState<Tag[]>([])
   const [senders, setSenders] = useState<Sender[]>([])
 
-  const [totalContactsCount, setTotalContactsCount] = useState(0)
-  const [totalTagsCount, setTotalTagsCount] = useState(0)
-  const [totalSendersCount, setTotalSendersCount] = useState(0)
+  const [totalContactCount, setTotalContactCount] = useState(0)
+  const [totalTagCount, setTotalTagCount] = useState(0)
+  const [totalSenderCount, setTotalSenderCount] = useState(0)
 
   const [selectedContacts, setSelectedContacts] = useState<string[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
@@ -233,7 +234,7 @@ export default function EditContactPage() {
     if (contactsFetcher.data) {
       if (contactsFetcher.data.success) {
         setContacts(contactsFetcher.data.result.data)
-        setTotalContactsCount(contactsFetcher.data.result.count)
+        setTotalContactCount(contactsFetcher.data.result.count)
       } else {
         toast.error(contactsFetcher.data.message)
       }
@@ -244,7 +245,7 @@ export default function EditContactPage() {
     if (tagsFetcher.data) {
       if (tagsFetcher.data.success) {
         setTags(tagsFetcher.data.result.data)
-        setTotalTagsCount(tagsFetcher.data.result.count)
+        setTotalTagCount(tagsFetcher.data.result.count)
       } else {
         toast.error(tagsFetcher.data.message)
       }
@@ -255,7 +256,7 @@ export default function EditContactPage() {
     if (sendersFetcher.data) {
       if (sendersFetcher.data.success) {
         setSenders(sendersFetcher.data.result.data)
-        setTotalSendersCount(sendersFetcher.data.result.count)
+        setTotalSenderCount(sendersFetcher.data.result.count)
       } else {
         toast.error(sendersFetcher.data.message)
       }

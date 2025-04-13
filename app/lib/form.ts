@@ -8,6 +8,7 @@ export const NAMES = {
   SEARCH_CONTACTS: 'search-contacts',
   SEARCH_EMAILS: 'search-emails',
   SEARCH_DRAFTS: 'search-drafts',
+  SEARCH_TAGS: 'search-tags',
   SEARCH_SCHEDULED_EMAILS: 'search-scheduled-emails',
   SEARCH_SENDERS: 'search-senders',
   TEXT_COLOR: 'text-color',
@@ -68,6 +69,7 @@ export const LABELS = {
   TARGET: 'Target',
   ESP: 'ESP',
   PROVIDER: 'Provider',
+  TAG_NAME: 'Tag Name',
 
   ADD_NEW_COMPANY: 'Add New Company',
   ADD_NEW_CONTACT: 'Add New Contact',
@@ -119,12 +121,14 @@ export const PLACEHOLDERS = {
   SEARCH_CONTACTS: 'Search Contacts...',
   SEARCH_EMAILS: 'Search Emails...',
   SEARCH_DRAFTS: 'Search Drafts...',
+  SEARCH_TAGS: 'Search Tags...',
   SEARCH_SCHEDULED_EMAILS: 'Search Scheduled Emails...',
   SEARCH_SENDERS: 'Search Senders...',
 
   COMPANY_NAME: 'Enter company name',
   COMPANY_DESCRIPTION: 'Enter company description',
   COMPANY_LOCATION: 'Enter company location',
+  TAG_NAME: 'Enter tag name',
 
   TAGS: 'Select Tags',
   PROVIDERS: 'Select Providers',

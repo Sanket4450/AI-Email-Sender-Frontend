@@ -1,22 +1,22 @@
 import { Control } from 'react-hook-form'
 import { CommonTextarea } from '../shared/form/common-textarea'
-import { MODIFY_COMPANY_FIELDS } from '~/lib/form-fields'
+import { MODIFY_TAG_FIELDS } from '~/lib/form-fields'
 import { INPUT_TYPES } from '~/lib/constants'
 import { CommonTextField } from '../shared/form/common-text-field'
-import { ModifyCompany } from '~/schemas/company'
+import { ModifyTag } from '~/schemas/tag'
 
-interface ModifyCompanyFieldsProps {
-  control: Control<ModifyCompany>
+interface ModifyTagFieldsProps {
+  control: Control<ModifyTag>
   furtherFields?: React.ReactNode
 }
 
-export const ModifyCompanyFields = ({
+export const ModifyTagFields = ({
   control,
   furtherFields,
-}: ModifyCompanyFieldsProps) => {
+}: ModifyTagFieldsProps) => {
   return (
     <div className="grid grid-cols-1 gap-y-4 gap-x-6">
-      {MODIFY_COMPANY_FIELDS.map((f) =>
+      {MODIFY_TAG_FIELDS.map((f) =>
         f.type === INPUT_TYPES.TEXTAREA ? (
           <CommonTextarea
             key={f.name}

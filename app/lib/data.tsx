@@ -5,6 +5,7 @@ import {
   FileText,
   Mail,
   Send,
+  Tags,
   Trash,
   Users,
 } from 'lucide-react'
@@ -22,6 +23,7 @@ export const NAVBAR_ITEMS: NavbarItem[] = [
   { label: 'Dashboard', icon: ChartNoAxesCombined, path: '/' },
   { label: 'Companies', icon: Building, path: '/companies' },
   { label: 'Contacts', icon: Users, path: '/contacts' },
+  { label: 'Tags', icon: Tags, path: '/tags' },
   { label: 'Drafts', icon: FileText, path: '/drafts' },
   { label: 'Emails', icon: Mail, path: '/emails' },
   { label: 'Senders', icon: Send, path: '/senders' },

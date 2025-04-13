@@ -1,21 +1,23 @@
 import React, { createContext, useContext, useState } from 'react'
 
 export type ModalType =
+  | 'modify-tag'
   | 'delete-company'
   | 'delete-contact'
   | 'delete-sender'
   | 'delete-draft'
+  | 'delete-tag'
 
 interface ModalState {
-  type: ModalType // Type of modal (e.g., "edit-company", "delete-contact")
-  data: Record<string, unknown> // Data associated with the modal
+  type: ModalType 
+  data: Record<string, unknown>
 }
 
 interface ModalContextType {
-  openModal: (type: ModalType, data: Record<string, unknown>) => void
+  openModal: (type: ModalType, data: Record<string, any>) => void
   closeModal: (type: ModalType) => void
   isModalOpen: (type: ModalType) => boolean
-  getModalData: (type: ModalType) => Record<string, unknown> | undefined
+  getModalData: (type: ModalType) => Record<string, any> | undefined
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined)
@@ -32,7 +34,7 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
   const [modals, setModals] = useState<ModalState[]>([])
 
   // Open a new modal
-  const openModal = (type: ModalType, data: Record<string, unknown>) => {
+  const openModal = (type: ModalType, data: Record<string, any>) => {
     setModals([...modals, { type, data }])
   }
 

@@ -38,6 +38,7 @@ export async function action({
 
   const fetchTagsData = async () => {
     const { count, data } = await fetchTags({
+      asOptions: true,
       search,
       page,
     })

@@ -28,6 +28,7 @@ export const CONSTANTS = {
   GENERATE_EMAIL_FORM: 'Generate Email Form',
   COMPOSE_EMAIL_FORM: 'Compose Email Form',
   MODIFY_SENDER_FORM: 'Modify Sender Form',
+  MODIFY_TAG_FORM: 'Modify Tag Form',
 } as const
 
 export const REQ_METHODS = {

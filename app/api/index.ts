@@ -28,6 +28,7 @@ export async function apiCall({
         ...headers,
       },
       ...(method !== REQ_METHODS.GET && { data: JSON.stringify(body) }),
+      validateStatus: () => true,
     })
 
     const data = response.data

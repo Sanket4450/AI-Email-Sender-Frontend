@@ -69,6 +69,15 @@ export const MODIFY_CONTACT_FIELDS: FormField[] = [
   },
 ]
 
+export const MODIFY_TAG_FIELDS: FormField[] = [
+  {
+    name: NAMES.TITLE,
+    label: LABELS.TAG_NAME,
+    placeholder: PLACEHOLDERS.TAG_NAME,
+    type: INPUT_TYPES.TEXT,
+  },
+]
+
 export const GENERATE_EMAIL_FIELDS: FormField[] = [
   {
     name: NAMES.PROMPT,
@@ -86,7 +95,6 @@ export const COMPOSE_EMAIL_FIELDS: FormField[] = [
     type: INPUT_TYPES.TEXT,
   },
 ]
-
 
 export const MODIFY_SENDER_FIELDS: FormField[] = [
   {

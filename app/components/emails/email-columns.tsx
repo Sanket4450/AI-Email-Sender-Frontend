@@ -1,11 +1,12 @@
-import { LABELS } from '~/lib/form'
+import { LABELS, NAMES } from '~/lib/form'
 import { ColumnDef } from '~/types/common'
 import { Email } from '~/types/email'
 import { createdAtColumn } from '../shared/table/common-columns'
 import { StatusMarker } from '../shared/ui/status-marker'
 import { CompletionMarker } from '../shared/ui/completion-marker'
 import { EmailEventTracker } from './email-event-tracker'
-import { prepareEmailEvents } from '~/lib/utils'
+import { formatStringArray } from '~/lib/utils'
+import { CONSTANTS } from '~/lib/constants'
 
 export const emailColumns: ColumnDef<Email>[] = [
   { accessorKey: 'subject', header: 'Subject' },
@@ -15,11 +16,19 @@ export const emailColumns: ColumnDef<Email>[] = [
     cell: ({ row }) => row.contact.name,
   },
   {
-    id: 'contact',
+    id: 'tags',
+    header: 'Tags',
+    cell: ({ row }) => formatStringArray(row.tags, NAMES.TITLE) || CONSTANTS.NA,
+  },
+  {
+    id: 'events',
     header: 'Events',
     align: 'center',
     cell: ({ row }) => (
-      <EmailEventTracker data={prepareEmailEvents(row.events)} />
+      <EmailEventTracker
+        id={row.id}
+        events={row.events}
+      />
     ),
   },
   {

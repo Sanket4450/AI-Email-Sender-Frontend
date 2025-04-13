@@ -6,11 +6,23 @@ import { Draft } from '~/types/draft'
 import { createdAtColumn } from '../shared/table/common-columns'
 
 export const draftColumns: ColumnDef<Draft>[] = [
-  { accessorKey: 'subject', header: 'Subject' },
+  { accessorKey: 'subject', header: 'Subject',maxWidth: 280 },
   {
     id: 'sender',
     header: 'Sender',
     cell: ({ row }) => row.sender?.displayName || CONSTANTS.NA,
+  },
+  {
+    id: 'contacts',
+    header: 'Contacts',
+    cell: ({ row }) =>
+      formatStringArray(row.contacts, NAMES.NAME) || CONSTANTS.NA,
+  },
+  {
+    id: 'tags',
+    header: 'Tags',
+    cell: ({ row }) =>
+      formatStringArray(row.tags, NAMES.TITLE) || CONSTANTS.NA,
   },
   {
     id: 'scheduledAt',
@@ -18,11 +30,6 @@ export const draftColumns: ColumnDef<Draft>[] = [
     minWidth: 105,
     cell: ({ row }) =>
       row.scheduledAt ? formatDate(row.scheduledAt) : CONSTANTS.NA,
-  },
-  {
-    id: 'contacts',
-    header: 'Contacts',
-    cell: ({ row }) => formatStringArray(row.contacts, NAMES.NAME) || CONSTANTS.NA,
   },
   createdAtColumn(),
 ]

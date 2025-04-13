@@ -3,53 +3,61 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import axios from 'axios'
-import { useFetcher, useNavigate } from '@remix-run/react'
+import { Form } from '~/components/ui/form'
+import { fetchContacts } from '~/api/contacts'
+import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react'
+import { LABELS, PLACEHOLDERS } from '~/lib/form'
+import { CONSTANTS, REQ_METHODS } from '~/lib/constants'
+import { formatEditorContent, getBaseURL, safeExecute } from '~/lib/utils'
+import { ERROR_MSG, SUCCESS_MSG } from '~/lib/messages'
+import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
+import { fetchTags } from '~/api/tags'
+import { Tag } from '~/types/tag'
+import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
+import { ActionBtn, CancelBtn } from '~/components/shared/ui/buttons'
+import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
+import { Contact } from '~/types/contact'
+import { FormActionWrapper } from '~/components/shared/ui/form-action-wrapper'
+import { Button } from '~/components/ui/button'
+import { Clock, Save, Send, WandSparkles } from 'lucide-react'
+import { Card, CardContent, CardFooter } from '~/components/ui/card'
+import { CommonSelectMenu } from '~/components/shared/form/common-select-menu'
+import { Label } from '~/components/ui/label'
+import { RichEditor } from '~/components/shared/rich-text-editor'
+import { fetchSingleDraft, updateDraft } from '~/api/drafts'
+import { fetchSenders } from '~/api/senders'
+import { addEmail } from '~/api/emails'
+import { Sender } from '~/types/sender'
+import { VALUES } from '~/lib/values'
 import {
   ComposeEmail,
   ComposeEmailSchema,
   GenerateEmail,
   GenerateEmailSchema,
 } from '~/schemas/email'
-import { LABELS, PLACEHOLDERS } from '~/lib/form'
-import { formatEditorContent, getBaseURL, safeExecute } from '~/lib/utils'
-import { ERROR_MSG, SUCCESS_MSG } from '~/lib/messages'
-import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
-import { fetchTags } from '~/api/tags'
-import { Tag } from '~/types/tag'
-import { ActionBtn, CancelBtn, SubmitBtn } from '~/components/shared/ui/buttons'
-import { RichEditor } from '~/components/shared/rich-text-editor'
-import { CONSTANTS, REQ_METHODS } from '~/lib/constants'
-import { FormActionWrapper } from '~/components/shared/ui/form-action-wrapper'
-import { Card, CardContent, CardFooter } from '~/components/ui/card'
-import { Clock, Save, Send, WandSparkles } from 'lucide-react'
-import { Button } from '~/components/ui/button'
-import { ComposeEmailFields } from '~/components/emails/compose-email-fields'
-import { Form } from '~/components/ui/form'
-import { Label } from '~/components/ui/label'
-import { Contact } from '~/types/contact'
-import { fetchContacts } from '~/api/contacts'
-import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
-import { fetchSenders } from '~/api/senders'
-import { Sender } from '~/types/sender'
-import { CommonSelectMenu } from '~/components/shared/form/common-select-menu'
+import { Draft } from '~/types/draft'
 import { GenerateEmailFields } from '~/components/emails/generate-email-fields'
-import { VALUES } from '~/lib/values'
-import { addDraft } from '~/api/drafts'
-import { addEmail } from '~/api/emails'
-import { ActionFunctionArgs } from '@remix-run/node'
-// import { baseURL } from '~/api'
+import { ComposeEmailFields } from '~/components/emails/compose-email-fields'
 
 const baseURL = getBaseURL()
 
-interface ComposeRequest extends Filter {
+interface EditDraftRequest extends Filter {
   action: ResourceAction
+}
+
+export async function loader({ params }: LoaderFunctionArgs): Promise<Draft> {
+  const result = await fetchSingleDraft(params.id as string)
+  return result
 }
 
 export async function action({
   request,
+  params,
 }: ActionFunctionArgs): Promise<Response | null> {
-  const { action, search, page, ...data }: ComposeRequest =
+  const { action, search, page, ...data }: EditDraftRequest =
     await request.json()
+
+  const draftId = params.id as string
 
   const fetchContactsData = async () => {
     const { count, data } = await fetchContacts({
@@ -102,19 +110,19 @@ export async function action({
         result: await fetchSendersData(),
       }
 
-    case ResourceAction.ADD_DRAFT:
+    case ResourceAction.EDIT_DRAFT:
       return await safeExecute(async () => {
-        await addDraft(data)
+        await updateDraft(draftId, data)
         return {
           success: true,
-          action: ResourceAction.ADD_DRAFT,
+          action: ResourceAction.EDIT_DRAFT,
           message: SUCCESS_MSG.EMAIL_SAVED,
         }
       })
 
     case ResourceAction.SCHEDULE_EMAIL:
       return await safeExecute(async () => {
-        await addDraft(data)
+        await updateDraft(draftId, data)
         return {
           success: true,
           action: ResourceAction.SCHEDULE_EMAIL,
@@ -137,7 +145,9 @@ export async function action({
   }
 }
 
-export default function ComposePage() {
+export default function EditContactPage() {
+  const loaderData = useLoaderData<typeof loader>()
+
   const fetcher = useFetcher<Response>()
   const contactsFetcher = useFetcher<Response>()
   const tagsFetcher = useFetcher<Response>()
@@ -177,12 +187,25 @@ export default function ComposePage() {
   )
 
   useEffect(() => {
+    if (loaderData) {
+      const draft = loaderData
+
+      if (draft.subject) composeEmailForm.setValue('subject', draft.subject)
+      if (draft.body) setContent(draft.body)
+      if (draft.sender) setSelectedSender(draft.sender.id)
+      if (draft.contacts.length)
+        setSelectedContacts(draft.contacts.map((c) => c.id))
+      if (draft.tags.length) setSelectedTags(draft.tags.map((t) => t.id))
+    }
+  }, [loaderData])
+
+  useEffect(() => {
     if (fetcher.data) {
       if (fetcher.data.success) {
         const { action } = fetcher.data
 
         switch (action) {
-          case ResourceAction.ADD_DRAFT:
+          case ResourceAction.EDIT_DRAFT:
             toast.success(SUCCESS_MSG.EMAIL_SAVED)
             navigate('/drafts')
             break
@@ -384,7 +407,7 @@ export default function ComposePage() {
 
       fetcher.submit(
         {
-          action: ResourceAction.ADD_DRAFT,
+          action: ResourceAction.EDIT_DRAFT,
           ...payload,
         },
         { method: 'POST', encType: 'application/json' }

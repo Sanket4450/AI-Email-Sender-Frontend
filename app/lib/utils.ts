@@ -11,6 +11,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function getBaseURL() {
+  return import.meta.env.VITE_BACKEND_URL
+}
+
 export function formatDate(
   date: string | Date,
   format: string = VALUES.COMMON_DATE_FORMAT

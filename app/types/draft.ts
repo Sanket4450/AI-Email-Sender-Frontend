@@ -1,5 +1,6 @@
 import { Contact } from './contact'
 import { Sender } from './sender'
+import { Tag } from './tag'
 
 export interface Draft {
   id: string
@@ -8,5 +9,6 @@ export interface Draft {
   scheduledAt?: string
   createdAt: string
   contacts: Contact[]
+  tags: Tag[]
   sender?: Sender
 }

@@ -27,8 +27,7 @@ export async function apiCall({
         'Content-Type': 'application/json',
         ...headers,
       },
-      data: method !== REQ_METHODS.GET ? JSON.stringify(body) : undefined,
-      validateStatus: (_) => true,
+      ...(method !== REQ_METHODS.GET && { data: JSON.stringify(body) }),
     })
 
     const data = response.data

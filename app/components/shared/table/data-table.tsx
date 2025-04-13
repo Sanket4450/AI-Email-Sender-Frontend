@@ -30,9 +30,9 @@ export const DataTable = <T,>({ columns, data }: CompaniesTableProps<T>) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((row, idx) => (
+        {data.map((row, rowIdx) => (
           <TableRow
-            key={idx}
+            key={rowIdx}
             className="">
             {columns.map((c) => {
               const cellValue = c.cell

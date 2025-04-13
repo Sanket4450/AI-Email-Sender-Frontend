@@ -168,12 +168,14 @@ export default function EmailsPage() {
 
         {/* Table Header */}
         <TableHeaderSection>
-          <SearchField
-            name={NAMES.SEARCH_EMAILS}
-            placeholder={PLACEHOLDERS.SEARCH_EMAILS}
-            value={searchText}
-            onChange={setSearchText}
-          />
+          <div className="flex items-center gap-3">
+            <SearchField
+              name={NAMES.SEARCH_EMAILS}
+              placeholder={PLACEHOLDERS.SEARCH_EMAILS}
+              value={searchText}
+              onChange={setSearchText}
+            />
+          </div>
 
           <div className="flex items-center gap-3">
             <CommonMultiSelectMenu
@@ -185,7 +187,7 @@ export default function EmailsPage() {
               includeLabel={false}
               showSelectedLabels={false}
               readOnly={fetcher.state === 'loading'}
-              triggerStyles='min-w-28'
+              triggerStyles="min-w-28"
             />
 
             <CancelBtn

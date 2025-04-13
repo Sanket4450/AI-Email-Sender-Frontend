@@ -234,13 +234,6 @@ export default function SendersPage() {
     []
   )
 
-  const data = {
-    processed: true,
-    delivered: true,
-    opened: false,
-    clicked: false,
-  }
-
   return (
     <>
       <div className="h-full flex flex-col">

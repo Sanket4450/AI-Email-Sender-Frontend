@@ -18,7 +18,6 @@ import { useDebouncedSearch } from '~/hooks/use-debounced-search'
 import { Separator } from '~/components/ui/separator'
 import { TableFooterSection } from '~/components/shared/table/table-footer-section'
 import { VALUES } from '~/lib/values'
-import { PageTitle } from '~/components/layout/page-title'
 import { TableHeaderSection } from '~/components/shared/table/table-header-section'
 import { DeleteDraftModal } from '~/components/drafts/delete-draft-modal'
 import { toast } from 'sonner'
@@ -38,6 +37,10 @@ interface DraftsRequest {
 interface DraftsResponse {
   count: number
   data: Draft[]
+}
+
+export const handle = {
+  heading: LABELS.DRAFTS,
 }
 
 export async function loader({
@@ -205,9 +208,6 @@ export default function DraftsPage() {
   return (
     <>
       <div className="h-full flex flex-col">
-        {/* Header */}
-        <PageTitle title={LABELS.DRAFTS} />
-
         {/* Table Header */}
         <TableHeaderSection>
           <SearchField

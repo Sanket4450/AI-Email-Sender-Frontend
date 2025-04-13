@@ -12,13 +12,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useModal } from '~/context/modal-context'
 import { Company } from '~/types/company'
 import { LABELS, NAMES, PLACEHOLDERS } from '~/lib/form'
-import { formatDate, formatStringArray, safeExecute } from '~/lib/utils'
+import { safeExecute } from '~/lib/utils'
 import { SearchField } from '~/components/shared/form/search-field'
 import { useDebouncedSearch } from '~/hooks/use-debounced-search'
 import { Separator } from '~/components/ui/separator'
 import { TableFooterSection } from '~/components/shared/table/table-footer-section'
 import { VALUES } from '~/lib/values'
-import { PageTitle } from '~/components/layout/page-title'
 import { TableHeaderSection } from '~/components/shared/table/table-header-section'
 import { DeleteCompanyModal } from '~/components/companies/delete-company-modal'
 import { toast } from 'sonner'
@@ -27,6 +26,10 @@ import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { CONSTANTS } from '~/lib/constants'
 import { ActionBtn, CancelBtn } from '~/components/shared/ui/buttons'
 import { companyColumns } from '~/components/companies/company-columns'
+
+export const handle = {
+  heading: LABELS.COMPANIES,
+}
 
 interface CompaniesRequest {
   action: ResourceAction
@@ -205,9 +208,6 @@ export default function CompaniesPage() {
   return (
     <>
       <div className="h-full flex flex-col">
-        {/* Header */}
-        <PageTitle title={LABELS.COMPANIES} />
-
         {/* Table Header */}
         <TableHeaderSection>
           <SearchField

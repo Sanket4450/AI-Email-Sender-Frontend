@@ -8,7 +8,6 @@ import { useFetcher, useNavigate } from '@remix-run/react'
 import { CreateSender, CreateSenderSchema } from '~/schemas/sender'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
 import { CONSTANTS } from '~/lib/constants'
-import { PageTitle } from '~/components/layout/page-title'
 import { Sender } from '~/types/sender'
 import { safeExecute } from '~/lib/utils'
 import { ERROR_MSG, SUCCESS_MSG } from '~/lib/messages'
@@ -24,10 +23,14 @@ interface AddSenderRequest extends Sender, Filter {
   action: ResourceAction
 }
 
+export const handle = {
+  heading: LABELS.ADD_NEW_SENDER,
+}
+
 export async function action({
   request,
 }: ActionFunctionArgs): Promise<Response | null> {
-  const { action, search, page, ...data }: AddSenderRequest =
+  const { action, ...data }: AddSenderRequest =
     await request.json()
 
   switch (action) {
@@ -104,9 +107,6 @@ export default function AddSenderPage() {
 
   return (
     <div className="container mx-auto max-w-3xl">
-      {/* Header */}
-      <PageTitle title={LABELS.ADD_NEW_SENDER} />
-
       {/* Form */}
       <Form {...form}>
         <form

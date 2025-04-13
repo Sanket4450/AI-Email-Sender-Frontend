@@ -37,9 +37,12 @@ import { VALUES } from '~/lib/values'
 import { addDraft } from '~/api/drafts'
 import { addEmail } from '~/api/emails'
 import { ActionFunctionArgs } from '@remix-run/node'
-// import { baseURL } from '~/api'
 
 const baseURL = getBaseURL()
+
+export const handle = {
+  heading: LABELS.COMPOSE,
+}
 
 interface ComposeRequest extends Filter {
   action: ResourceAction
@@ -48,8 +51,7 @@ interface ComposeRequest extends Filter {
 export async function action({
   request,
 }: ActionFunctionArgs): Promise<Response | null> {
-  const { action, search, page, ...data }: ComposeRequest =
-    await request.json()
+  const { action, search, page, ...data }: ComposeRequest = await request.json()
 
   const fetchContactsData = async () => {
     const { count, data } = await fetchContacts({
@@ -425,7 +427,6 @@ export default function ComposePage() {
     <div className="w-full h-full flex flex-col">
       {/* Header */}
       <header className="flex items-center gap-2 w-full pb-4">
-        <h1 className="text-2xl font-bold">{LABELS.COMPOSE}</h1>
         <FormActionWrapper>
           <CancelBtn onClick={handleCancel} />
 

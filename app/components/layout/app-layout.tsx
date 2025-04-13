@@ -5,6 +5,7 @@ import styles from '~/tailwind.css?url'
 import Header from './header'
 import { ModalProvider } from '~/context/modal-context'
 import { VALUES } from '~/lib/values'
+import { LayoutProvider } from '~/context/layout-context'
 
 export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles }]
 
@@ -14,26 +15,29 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children }: AppLayoutProps) {
   return (
-    <ModalProvider>
-      <div className="h-[100svh] relative overflow-hidden">
-        <Header />
-
-        <div
-          className="w-full h-full"
-          style={{ paddingTop: VALUES.HEADER_HEIGHT }}>
+    <LayoutProvider>
+      <ModalProvider>
+        <div className="h-[100svh] relative overflow-hidden">
           <Sidebar />
 
-          <main
-            className="w-full h-full overflow-y-auto"
+          <div
+            className="w-full h-full"
             style={{
-              padding: VALUES.MAIN_CONTENT_PADDING,
-              paddingLeft:
-                VALUES.COLLAPSED_SIDEBAR_WIDTH + VALUES.MAIN_CONTENT_PADDING,
+              paddingTop: VALUES.HEADER_HEIGHT,
+              paddingLeft: VALUES.COLLAPSED_SIDEBAR_WIDTH,
             }}>
-            {children}
-          </main>
+            <Header />
+
+            <main
+              className="w-full h-full overflow-y-auto"
+              style={{
+                padding: VALUES.MAIN_CONTENT_PADDING,
+              }}>
+              {children}
+            </main>
+          </div>
         </div>
-      </div>
-    </ModalProvider>
+      </ModalProvider>
+    </LayoutProvider>
   )
 }

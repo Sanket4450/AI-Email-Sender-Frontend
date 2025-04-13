@@ -2,15 +2,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Badge } from '~/components/ui/badge'
 import { Progress } from '~/components/ui/progress'
 import { Avatar, AvatarFallback } from '~/components/ui/avatar'
-import {
-  Mail,
-  MousePointer,
-  Reply,
-  AlertTriangle,
-  Triangle,
-} from 'lucide-react'
+import { Mail, MousePointer, Reply, Triangle } from 'lucide-react'
 import { DataCard } from '~/components/dashboard/data-card'
 import { CONSTANTS } from '~/lib/constants'
+import { LABELS } from '~/lib/form'
+
+
+export const handle = {
+  heading: LABELS.DASHBOARD,
+}
 
 export default function Dashboard() {
   return (

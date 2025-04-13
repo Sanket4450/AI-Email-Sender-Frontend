@@ -8,7 +8,6 @@ import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react'
 import { ModifyContact, ModifyContactSchema } from '~/schemas/contact'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
 import { CONSTANTS } from '~/lib/constants'
-import { PageTitle } from '~/components/layout/page-title'
 import { safeExecute } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
 import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
@@ -19,6 +18,11 @@ import { SubmitBtn } from '~/components/shared/ui/buttons'
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { Contact } from '~/types/contact'
 import { ModifyContactFields } from '~/components/contacts/modify-contact-fields'
+
+
+export const handle = {
+  heading: LABELS.EDIT_CONTACT,
+}
 
 interface EditContactRequest extends Filter {
   action: ResourceAction
@@ -160,9 +164,6 @@ export default function EditContactPage() {
 
   return (
     <div className="container mx-auto max-w-2xl">
-      {/* Header */}
-      <PageTitle title={LABELS.EDIT_CONTACT} />
-
       {/* Form */}
       <Form {...form}>
         <form

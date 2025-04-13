@@ -45,6 +45,10 @@ interface EditDraftRequest extends Filter {
   action: ResourceAction
 }
 
+export const handle = {
+  heading: LABELS.EDIT_DRAFT,
+}
+
 export async function loader({ params }: LoaderFunctionArgs): Promise<Draft> {
   const result = await fetchSingleDraft(params.id as string)
   return result

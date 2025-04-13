@@ -8,7 +8,6 @@ import { useFetcher, useNavigate } from '@remix-run/react'
 import { ModifyCompany, ModifyCompanySchema } from '~/schemas/company'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
 import { CONSTANTS } from '~/lib/constants'
-import { PageTitle } from '~/components/layout/page-title'
 import { Company } from '~/types/company'
 import { safeExecute } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
@@ -19,6 +18,10 @@ import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-sel
 import { SubmitBtn } from '~/components/shared/ui/buttons'
 import { ModifyCompanyFields } from '~/components/companies/modify-company-fields'
 import { ActionFunctionArgs } from '@remix-run/node'
+
+export const handle = {
+  heading: LABELS.ADD_NEW_COMPANY,
+}
 
 interface AddCompanyRequest extends Company, Filter {
   action: ResourceAction
@@ -135,9 +138,6 @@ export default function AddCompanyPage() {
 
   return (
     <div className="container mx-auto max-w-2xl">
-      {/* Header */}
-      <PageTitle title={LABELS.ADD_NEW_COMPANY} />
-
       {/* Form */}
       <Form {...form}>
         <form

@@ -18,7 +18,6 @@ import { useDebouncedSearch } from '~/hooks/use-debounced-search'
 import { Separator } from '~/components/ui/separator'
 import { TableFooterSection } from '~/components/shared/table/table-footer-section'
 import { VALUES } from '~/lib/values'
-import { PageTitle } from '~/components/layout/page-title'
 import { TableHeaderSection } from '~/components/shared/table/table-header-section'
 import { DeleteContactModal } from '~/components/contacts/delete-contact-modal'
 import { toast } from 'sonner'
@@ -38,6 +37,11 @@ interface ContactsRequest {
 interface ContactsResponse {
   count: number
   data: Contact[]
+}
+
+
+export const handle = {
+  heading: LABELS.CONTACTS,
 }
 
 export async function loader({
@@ -205,9 +209,6 @@ export default function ContactsPage() {
   return (
     <>
       <div className="h-full flex flex-col">
-        {/* Header */}
-        <PageTitle title={LABELS.CONTACTS} />
-
         {/* Table Header */}
         <TableHeaderSection>
           <SearchField

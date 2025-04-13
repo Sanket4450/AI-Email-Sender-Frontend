@@ -8,7 +8,6 @@ import { useFetcher, useNavigate } from '@remix-run/react'
 import { ModifyContact, ModifyContactSchema } from '~/schemas/contact'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
 import { CONSTANTS } from '~/lib/constants'
-import { PageTitle } from '~/components/layout/page-title'
 import { Contact } from '~/types/contact'
 import { safeExecute } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
@@ -19,6 +18,10 @@ import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-sel
 import { SubmitBtn } from '~/components/shared/ui/buttons'
 import { ModifyContactFields } from '~/components/contacts/modify-contact-fields'
 import { ActionFunctionArgs } from '@remix-run/node'
+
+export const handle = {
+  heading: LABELS.ADD_NEW_CONTACT,
+}
 
 interface AddContactRequest extends Contact, Filter {
   action: ResourceAction
@@ -138,9 +141,6 @@ export default function AddContactPage() {
 
   return (
     <div className="container mx-auto max-w-3xl">
-      {/* Header */}
-      <PageTitle title={LABELS.ADD_NEW_CONTACT} />
-
       {/* Form */}
       <Form {...form}>
         <form

@@ -8,7 +8,6 @@ import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react'
 import { ModifyCompany, ModifyCompanySchema } from '~/schemas/company'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
 import { CONSTANTS } from '~/lib/constants'
-import { PageTitle } from '~/components/layout/page-title'
 import { safeExecute } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
 import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
@@ -20,6 +19,10 @@ import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { Company } from '~/types/company'
 import { ModifyCompanyFields } from '~/components/companies/modify-company-fields'
 import { FormActionWrapper } from '~/components/shared/ui/form-action-wrapper'
+
+export const handle = {
+  heading: LABELS.EDIT_COMPANY,
+}
 
 interface EditCompanyRequest extends Filter {
   action: ResourceAction
@@ -159,9 +162,6 @@ export default function EditCompanyPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      {/* Header */}
-      <PageTitle title={LABELS.EDIT_COMPANY} />
-
       {/* Form */}
       <Form {...form}>
         <form

@@ -8,7 +8,6 @@ import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react'
 import { UpdateSender, UpdateSenderSchema } from '~/schemas/sender'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
 import { CONSTANTS } from '~/lib/constants'
-import { PageTitle } from '~/components/layout/page-title'
 import { Sender } from '~/types/sender'
 import { safeExecute, sanitizeObj } from '~/lib/utils'
 import { ERROR_MSG, SUCCESS_MSG } from '~/lib/messages'
@@ -22,6 +21,10 @@ import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 
 interface EditSenderRequest extends Sender, Filter {
   action: ResourceAction
+}
+
+export const handle = {
+  heading: LABELS.EDIT_SENDER,
 }
 
 export async function loader({ params }: LoaderFunctionArgs): Promise<Sender> {
@@ -127,9 +130,6 @@ export default function EditSenderPage() {
 
   return (
     <div className="container mx-auto max-w-3xl">
-      {/* Header */}
-      <PageTitle title={LABELS.EDIT_SENDER} />
-
       {/* Form */}
       <Form {...form}>
         <form

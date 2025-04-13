@@ -70,6 +70,7 @@ export const LABELS = {
   ESP: 'ESP',
   PROVIDER: 'Provider',
   TAG_NAME: 'Tag Name',
+  DASHBOARD: 'Dashboard',
 
   ADD_NEW_COMPANY: 'Add New Company',
   ADD_NEW_CONTACT: 'Add New Contact',

@@ -22,7 +22,6 @@ import { SearchField } from '~/components/shared/form/search-field'
 import { useDebouncedSearch } from '~/hooks/use-debounced-search'
 import { Separator } from '~/components/ui/separator'
 import { VALUES } from '~/lib/values'
-import { PageTitle } from '~/components/layout/page-title'
 import { TableHeaderSection } from '~/components/shared/table/table-header-section'
 import { DeleteSenderModal } from '~/components/senders/delete-sender-modal'
 import { toast } from 'sonner'
@@ -32,7 +31,7 @@ import { CONSTANTS } from '~/lib/constants'
 import { ActionBtn, CancelBtn } from '~/components/shared/ui/buttons'
 import { senderColumns } from '~/components/senders/senders-columns'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
-import { EmailEventTracker } from '~/components/emails/email-event-tracker'
+import { useLayout } from '~/context/layout-context'
 
 interface SendersRequest {
   action: ResourceAction
@@ -44,6 +43,10 @@ interface SendersRequest {
 interface SendersResponse {
   count: number
   data: Sender[]
+}
+
+export const handle = {
+  heading: LABELS.SENDERS,
 }
 
 export async function loader({
@@ -112,6 +115,7 @@ export default function SendersPage() {
     : []
 
   // Global States
+  const { setHeaderLabel } = useLayout()
   const { openModal, closeModal } = useModal()
 
   // Local States
@@ -123,6 +127,12 @@ export default function SendersPage() {
   const navigate = useNavigate()
 
   const { search } = useDebouncedSearch(searchText)
+
+  useEffect(() => {
+    setHeaderLabel(`(${totalCount})`)
+
+    return () => setHeaderLabel('')
+  }, [totalCount, setHeaderLabel])
 
   useEffect(() => {
     fetcher.submit(
@@ -237,12 +247,6 @@ export default function SendersPage() {
   return (
     <>
       <div className="h-full flex flex-col">
-        {/* Header */}
-        <PageTitle
-          title={LABELS.SENDERS}
-          subtitle={`(${totalCount})`}
-        />
-
         {/* Table Header */}
         <TableHeaderSection>
           <SearchField

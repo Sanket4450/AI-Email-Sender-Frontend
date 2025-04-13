@@ -15,7 +15,6 @@ import { useDebouncedSearch } from '~/hooks/use-debounced-search'
 import { Separator } from '~/components/ui/separator'
 import { TableFooterSection } from '~/components/shared/table/table-footer-section'
 import { VALUES } from '~/lib/values'
-import { PageTitle } from '~/components/layout/page-title'
 import { TableHeaderSection } from '~/components/shared/table/table-header-section'
 import { toast } from 'sonner'
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
@@ -35,6 +34,10 @@ interface EmailsRequest {
 interface EmailsResponse {
   count: number
   data: Email[]
+}
+
+export const handle = {
+  heading: LABELS.EMAILS,
 }
 
 export async function loader({
@@ -163,9 +166,6 @@ export default function EmailsPage() {
   return (
     <>
       <div className="h-full flex flex-col">
-        {/* Header */}
-        <PageTitle title={LABELS.EMAILS} />
-
         {/* Table Header */}
         <TableHeaderSection>
           <div className="flex items-center gap-3">
@@ -187,7 +187,7 @@ export default function EmailsPage() {
               includeLabel={false}
               showSelectedLabels={false}
               readOnly={fetcher.state === 'loading'}
-              triggerStyles="min-w-28"
+              triggerStyles="min-w-32"
             />
 
             <CancelBtn

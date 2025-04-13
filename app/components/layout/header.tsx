@@ -1,4 +1,4 @@
-import { Bell, Mail } from 'lucide-react'
+import { Bell } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import {
   DropdownMenu,
@@ -7,23 +7,41 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
 import { VALUES } from '~/lib/values'
-import { CONSTANTS } from '~/lib/constants'
 import { ModeToggle } from './mode-toggle'
-import { Link } from '@remix-run/react'
+import { useLayout } from '~/context/layout-context'
+import { useMatches } from '@remix-run/react'
+
+type MatchHandle = {
+  heading: string
+  subHeading?: string
+}
 
 export default function Header() {
+  const matches = useMatches()
+
+  const { headerLabel } = useLayout()
+
+  const currentPage = matches.find((match) => match.handle as MatchHandle)
+
+  const { heading, subHeading } = (currentPage?.handle as MatchHandle) || {
+    heading: '',
+    subHeading: '',
+  }
+
   return (
     <header
-      className="fixed top-0 w-full flex items-center justify-between p-4 border-b border-border"
-      style={{ height: VALUES.HEADER_HEIGHT }}>
-      <Link
-        to="/"
-        className="flex items-center">
-        <Mail className="h-6 w-6 text-blue-600 mr-2" />
-        <h1 className="text-xl font-bold text-foreground">
-          {CONSTANTS.APP_NAME}
-        </h1>
-      </Link>
+      className="fixed top-0 left-0 w-full flex items-center justify-between border-b border-border"
+      style={{
+        height: VALUES.HEADER_HEIGHT,
+        paddingLeft: VALUES.COLLAPSED_SIDEBAR_WIDTH + VALUES.HEADER_PADDING,
+        paddingRight: VALUES.HEADER_PADDING,
+      }}>
+      <div className="flex items-center gap-2">
+        <h1 className="text-xl font-bold">{heading}</h1>
+        <p className="mt-0.5 text-muted-foreground">
+          {subHeading || headerLabel}
+        </p>
+      </div>
 
       <div className="flex items-center gap-2">
         <ModeToggle />

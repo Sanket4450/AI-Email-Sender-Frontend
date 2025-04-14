@@ -2,7 +2,6 @@ import { LABELS, NAMES } from '~/lib/form'
 import { ColumnDef } from '~/types/common'
 import { Email } from '~/types/email'
 import { createdAtColumn } from '../shared/table/common-columns'
-import { StatusMarker } from '../shared/ui/status-marker'
 import { CompletionMarker } from '../shared/ui/completion-marker'
 import { EmailEventTracker } from './email-event-tracker'
 import { formatStringArray } from '~/lib/utils'
@@ -40,7 +39,7 @@ export const emailColumns: ColumnDef<Email>[] = [
     id: 'isBounced',
     header: 'Bounced',
     align: 'center',
-    cell: ({ row }) => <StatusMarker status={row.isBounced} />,
+    cell: ({ row }) => <CompletionMarker completed={row.isBounced} />,
   },
   {
     id: 'isSpamReported',

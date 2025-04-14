@@ -75,4 +75,5 @@ export interface ColumnDef<T> {
 export interface SelectOption {
   value: string
   label: string
+  subLabel?: string
 }

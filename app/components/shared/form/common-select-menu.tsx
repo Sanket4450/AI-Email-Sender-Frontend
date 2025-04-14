@@ -64,7 +64,9 @@ export const CommonSelectMenu = ({
             type="button"
             className="w-full rounded-md text-sm py-2 px-3 border border-input focus:border-foreground bg-background text-left focus:outline-none disabled:opacity-50"
             disabled={readOnly}>
-            {activeOption?.label || (
+            {activeOption ? (
+              `${activeOption.label} ${activeOption.subLabel}`
+            ) : (
               <span className="text-muted-foreground">{placeholder}</span>
             )}
           </button>
@@ -74,7 +76,7 @@ export const CommonSelectMenu = ({
           <PopoverContent
             side="bottom"
             align="start"
-            className="max-h-48 overflow-auto p-0 divide-y divide-input"
+            className="max-h-48 overflow-auto py-2 px-0 divide-y divide-input"
             style={{ width: 'max-content' }}>
             {!data.length ? (
               <NoDataFound message={INFO_MSG.NO_DATA_FOUND} />
@@ -83,14 +85,17 @@ export const CommonSelectMenu = ({
                 <div
                   key={item.value}
                   className={cn(
-                    `h-8 w-full flex items-center space-x-2 text-sm px-2 transition-colors duration-200`,
+                    `h-8 w-full flex justify-between items-center space-x-2 text-sm px-2 transition-colors duration-200`,
                     !readOnly && 'hover:cursor-pointer',
                     selectedOption === item.value
                       ? 'bg-primary text-white'
                       : 'hover:bg-accent'
                   )}
                   onClick={() => !readOnly && handleToggle(item.value)}>
-                  <p className="cursor-pointer">{item.label}</p>
+                  <p>{item.label}</p>
+                  {!!item.subLabel && (
+                    <p className="text-[13px]">{item.subLabel}</p>
+                  )}
                 </div>
               ))
             )}

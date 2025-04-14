@@ -186,8 +186,13 @@ export default function EditContactPage() {
     [tags]
   )
 
-  const senderOptions: SelectOption[] = useMemo(
-    () => senders.map((t) => ({ value: t.id, label: t.displayName })),
+  const senderOptions = useMemo<SelectOption[]>(
+    () =>
+      senders.map((t) => ({
+        value: t.id,
+        label: t.displayName,
+        subLabel: `(${t.esp})`,
+      })),
     [senders]
   )
 

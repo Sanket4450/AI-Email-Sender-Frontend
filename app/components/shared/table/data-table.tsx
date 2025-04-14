@@ -17,7 +17,7 @@ interface CompaniesTableProps<T> {
 export const DataTable = <T,>({ columns, data }: CompaniesTableProps<T>) => {
   return (
     <Table>
-      <TableHeader className="sticky top-0 z-20 bg-background">
+      <TableHeader className="sticky top-0 z-10 bg-background">
         <TableRow>
           {columns.map((c) => (
             <TableHead
@@ -38,7 +38,7 @@ export const DataTable = <T,>({ columns, data }: CompaniesTableProps<T>) => {
               const cellValue = c.cell
                 ? c.cell({ row })
                 : c.accessorKey
-                ? (row as Record<string, any>)[c.accessorKey] ?? CONSTANTS.NA
+                ? (row as Record<string, any>)[c.accessorKey] || CONSTANTS.NA
                 : null
 
               return (

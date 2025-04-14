@@ -9,7 +9,7 @@ import { ModifyContact, ModifyContactSchema } from '~/schemas/contact'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
 import { CONSTANTS } from '~/lib/constants'
 import { Contact } from '~/types/contact'
-import { safeExecute } from '~/lib/utils'
+import { safeExecute, sanitizeObj } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
 import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
 import { fetchTags } from '~/api/tags'
@@ -129,10 +129,12 @@ export default function AddContactPage() {
   })
 
   const handleSubmit = (values: ModifyContact) => {
+    const formattedValues = sanitizeObj(values)
+
     fetcher.submit(
       {
         action: ResourceAction.ADD_CONTACT,
-        ...values,
+        ...formattedValues,
         ...(selectedTags.length && { tags: selectedTags }),
       },
       { method: 'POST', encType: 'application/json' }

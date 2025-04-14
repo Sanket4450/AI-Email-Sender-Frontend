@@ -21,14 +21,14 @@ export default function Sidebar() {
     <>
       {isExpanded && (
         <div
-          className="fixed inset-0 bg-black/50 z-10"
+          className="fixed inset-0 bg-black/50 z-40"
           onClick={unexpand}
         />
       )}
 
       <div
         className={cn(
-          'h-full fixed z-30 border-r border-border p-4 bg-background'
+          'h-full fixed z-50 border-r border-border p-4 bg-background'
         )}
         style={{
           transition: `width ${VALUES.SIDEBAR_TRANSITION_DURATION} ease-in-out`,

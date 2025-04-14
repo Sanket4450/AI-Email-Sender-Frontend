@@ -91,7 +91,7 @@ export const CommonMultiSelectMenu = ({
           <PopoverContent
             side="bottom"
             align="start"
-            className="max-h-48 max-w-52 overflow-auto p-2"
+            className="max-h-48 max-w-52 overflow-auto py-2 px-0"
             style={{ width: 'max-content' }}>
             {!data.length ? (
               <NoDataFound message={INFO_MSG.NO_DATA_FOUND} />
@@ -100,8 +100,8 @@ export const CommonMultiSelectMenu = ({
                 <div
                   key={item.value}
                   className={cn(
-                    `h-8 w-full flex items-center space-x-2`,
-                    !readOnly && 'hover:cursor-pointer'
+                    `h-8 w-full flex items-center space-x-2 px-2`,
+                    !readOnly && 'hover:cursor-pointer hover:bg-accent'
                   )}
                   onClick={() => !readOnly && handleToggle(item.value)}>
                   <Checkbox

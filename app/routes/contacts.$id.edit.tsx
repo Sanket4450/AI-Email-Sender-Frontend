@@ -8,17 +8,17 @@ import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react'
 import { ModifyContact, ModifyContactSchema } from '~/schemas/contact'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
 import { CONSTANTS } from '~/lib/constants'
-import { safeExecute } from '~/lib/utils'
+import { safeExecute, sanitizeObj } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
 import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
 import { fetchTags } from '~/api/tags'
 import { Tag } from '~/types/tag'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
-import { SubmitBtn } from '~/components/shared/ui/buttons'
+import { CancelBtn, SubmitBtn } from '~/components/shared/ui/buttons'
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { Contact } from '~/types/contact'
 import { ModifyContactFields } from '~/components/contacts/modify-contact-fields'
-
+import { FormActionWrapper } from '~/components/shared/ui/form-action-wrapper'
 
 export const handle = {
   heading: LABELS.EDIT_CONTACT,
@@ -151,11 +151,17 @@ export default function EditContactPage() {
     },
   })
 
+  const handleCancel = () => {
+    navigate(-1)
+  }
+
   const handleSubmit = (values: ModifyContact) => {
+    const payload = sanitizeObj(values)
+
     fetcher.submit(
       {
         action: ResourceAction.EDIT_CONTACT,
-        ...values,
+        ...payload,
         ...(selectedTags.length && { tags: selectedTags }),
       },
       { method: 'POST', encType: 'application/json' }
@@ -185,12 +191,14 @@ export default function EditContactPage() {
         </form>
       </Form>
 
-      {/* Submit Button */}
-      <SubmitBtn
-        name={CONSTANTS.MODIFY_CONTACT_FORM}
-        child={LABELS.SAVE}
-        className="w-full mt-8"
-      />
+      {/* Form Action */}
+      <FormActionWrapper className="mt-8">
+        <CancelBtn onClick={handleCancel} />
+        <SubmitBtn
+          name={CONSTANTS.MODIFY_CONTACT_FORM}
+          child={LABELS.SAVE}
+        />
+      </FormActionWrapper>
     </div>
   )
 }

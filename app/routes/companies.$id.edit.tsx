@@ -8,7 +8,7 @@ import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react'
 import { ModifyCompany, ModifyCompanySchema } from '~/schemas/company'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
 import { CONSTANTS } from '~/lib/constants'
-import { safeExecute } from '~/lib/utils'
+import { safeExecute, sanitizeObj } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
 import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
 import { fetchTags } from '~/api/tags'
@@ -150,10 +150,12 @@ export default function EditCompanyPage() {
   }, [navigate])
 
   const handleSubmit = (values: ModifyCompany) => {
+    const payload = sanitizeObj(values)
+
     fetcher.submit(
       {
         action: ResourceAction.EDIT_COMPANY,
-        ...values,
+        ...payload,
         ...(selectedTags.length && { tags: selectedTags }),
       },
       { method: 'POST', encType: 'application/json' }

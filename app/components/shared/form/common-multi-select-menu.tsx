@@ -16,7 +16,7 @@ import { ClassValue } from 'clsx'
 interface MultiSelectMenuProps {
   data: SelectOption[]
   selectedOptions: string[]
-  label: string
+  label: React.ReactNode
   placeholder: string
   readOnly?: boolean
   includeLabel?: boolean
@@ -94,7 +94,12 @@ export const CommonMultiSelectMenu = ({
             className="max-h-48 max-w-52 overflow-auto py-2 px-0"
             style={{ width: 'max-content' }}>
             {!data.length ? (
-              <NoDataFound message={INFO_MSG.NO_DATA_FOUND} />
+              <div className="px-2">
+                <NoDataFound
+                  message={INFO_MSG.NO_DATA_FOUND}
+                  space="sm"
+                />
+              </div>
             ) : (
               data.map((item) => (
                 <div

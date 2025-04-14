@@ -9,15 +9,16 @@ import { ModifyCompany, ModifyCompanySchema } from '~/schemas/company'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
 import { CONSTANTS } from '~/lib/constants'
 import { Company } from '~/types/company'
-import { safeExecute } from '~/lib/utils'
+import { safeExecute, sanitizeObj } from '~/lib/utils'
 import { SUCCESS_MSG } from '~/lib/messages'
 import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
 import { fetchTags } from '~/api/tags'
 import { Tag } from '~/types/tag'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
-import { SubmitBtn } from '~/components/shared/ui/buttons'
+import { CancelBtn, SubmitBtn } from '~/components/shared/ui/buttons'
 import { ModifyCompanyFields } from '~/components/companies/modify-company-fields'
 import { ActionFunctionArgs } from '@remix-run/node'
+import { FormActionWrapper } from '~/components/shared/ui/form-action-wrapper'
 
 export const handle = {
   heading: LABELS.ADD_NEW_COMPANY,
@@ -125,11 +126,17 @@ export default function AddCompanyPage() {
     },
   })
 
+  const handleCancel = () => {
+    navigate(-1)
+  }
+
   const handleSubmit = (values: ModifyCompany) => {
+    const payload = sanitizeObj(values)
+
     fetcher.submit(
       {
         action: ResourceAction.ADD_COMPANY,
-        ...values,
+        ...payload,
         ...(selectedTags.length && { tags: selectedTags }),
       },
       { method: 'POST', encType: 'application/json' }
@@ -159,12 +166,14 @@ export default function AddCompanyPage() {
         </form>
       </Form>
 
-      {/* Submit Button */}
-      <SubmitBtn
-        name={CONSTANTS.MODIFY_COMPANY_FORM}
-        child={LABELS.SAVE}
-        className="w-full mt-8"
-      />
+      {/* Form Action */}
+      <FormActionWrapper className="mt-8">
+        <CancelBtn onClick={handleCancel} />
+        <SubmitBtn
+          name={CONSTANTS.MODIFY_COMPANY_FORM}
+          child={LABELS.SAVE}
+        />
+      </FormActionWrapper>
     </div>
   )
 }

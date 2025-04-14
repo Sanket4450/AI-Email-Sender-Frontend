@@ -14,6 +14,7 @@ export const contactColumns: ColumnDef<Contact>[] = [
     cell: ({ row }) => row.company.title || CONSTANTS.NA,
   },
   { accessorKey: 'email', header: 'Email' },
+  { accessorKey: 'phone', header: 'Phone' },
   {
     accessorKey: 'linkedInUrl',
     header: 'LinkedIn',

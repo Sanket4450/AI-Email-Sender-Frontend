@@ -14,7 +14,7 @@ import { useCallback, useMemo, useState } from 'react'
 interface SelectMenuProps {
   data: SelectOption[]
   selectedOption: string | null
-  label: string
+  label: React.ReactNode
   placeholder: string
   readOnly?: boolean
   includeLabel?: boolean
@@ -65,7 +65,9 @@ export const CommonSelectMenu = ({
             className="w-full rounded-md text-sm py-2 px-3 border border-input focus:border-foreground bg-background text-left focus:outline-none disabled:opacity-50"
             disabled={readOnly}>
             {activeOption ? (
-              `${activeOption.label} ${activeOption.subLabel}`
+              `${activeOption.label} ${
+                activeOption.subLabel ? activeOption.subLabel : ''
+              }`
             ) : (
               <span className="text-muted-foreground">{placeholder}</span>
             )}
@@ -79,7 +81,12 @@ export const CommonSelectMenu = ({
             className="max-h-48 overflow-auto py-2 px-0 divide-y divide-input"
             style={{ width: 'max-content' }}>
             {!data.length ? (
-              <NoDataFound message={INFO_MSG.NO_DATA_FOUND} />
+              <div className='px-2'>
+                <NoDataFound
+                  message={INFO_MSG.NO_DATA_FOUND}
+                  space="sm"
+                />
+              </div>
             ) : (
               data.map((item) => (
                 <div

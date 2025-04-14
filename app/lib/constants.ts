@@ -6,6 +6,7 @@ export const CONSTANTS = {
   APP_DESCRIPTION: 'A personalized email sender with AI for better reach.',
   NA: 'N/A',
   UNKNOWN: 'Unknown',
+  ADD: 'Add',
 
   SHOWING: 'Showing',
   ENTRIES: 'Entries',

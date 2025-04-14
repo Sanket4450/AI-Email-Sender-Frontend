@@ -9,15 +9,16 @@ import { CreateSender, CreateSenderSchema } from '~/schemas/sender'
 import { LABELS, PLACEHOLDERS } from '~/lib/form'
 import { CONSTANTS } from '~/lib/constants'
 import { Sender } from '~/types/sender'
-import { safeExecute } from '~/lib/utils'
+import { safeExecute, sanitizeObj } from '~/lib/utils'
 import { ERROR_MSG, SUCCESS_MSG } from '~/lib/messages'
 import { Filter, ResourceAction, Response } from '~/types/common'
-import { SubmitBtn } from '~/components/shared/ui/buttons'
+import { CancelBtn, SubmitBtn } from '~/components/shared/ui/buttons'
 import { ModifySenderFields } from '~/components/senders/modify-sender-fields'
 import { VALUES } from '~/lib/values'
 import { CommonSelectMenu } from '~/components/shared/form/common-select-menu'
 import { ESP_OPTIONS } from '~/lib/data'
 import { ActionFunctionArgs } from '@remix-run/node'
+import { FormActionWrapper } from '~/components/shared/ui/form-action-wrapper'
 
 interface AddSenderRequest extends Sender, Filter {
   action: ResourceAction
@@ -30,8 +31,7 @@ export const handle = {
 export async function action({
   request,
 }: ActionFunctionArgs): Promise<Response | null> {
-  const { action, ...data }: AddSenderRequest =
-    await request.json()
+  const { action, ...data }: AddSenderRequest = await request.json()
 
   switch (action) {
     case ResourceAction.ADD_SENDER:
@@ -88,15 +88,21 @@ export default function AddSenderPage() {
     },
   })
 
+  const handleCancel = () => {
+    navigate(-1)
+  }
+
   const handleSubmit = (values: CreateSender) => {
     if (!selectedESP) {
       return toast.error(ERROR_MSG.ESP_NOT_SELECTED)
     }
 
+    const payload = sanitizeObj(values)
+
     fetcher.submit(
       {
         action: ResourceAction.ADD_SENDER,
-        ...values,
+        ...payload,
         priority: parseInt(values.priority),
         target: parseInt(values.target),
         esp: selectedESP,
@@ -128,12 +134,14 @@ export default function AddSenderPage() {
         </form>
       </Form>
 
-      {/* Submit Button */}
-      <SubmitBtn
-        name={CONSTANTS.MODIFY_SENDER_FORM}
-        child={LABELS.SAVE}
-        className="w-full mt-8"
-      />
+      {/* Form Action */}
+      <FormActionWrapper className="mt-8">
+        <CancelBtn onClick={handleCancel} />
+        <SubmitBtn
+          name={CONSTANTS.MODIFY_SENDER_FORM}
+          child={LABELS.SAVE}
+        />
+      </FormActionWrapper>
     </div>
   )
 }

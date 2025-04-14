@@ -15,9 +15,10 @@ import { Filter, ResourceAction, Response, SelectOption } from '~/types/common'
 import { fetchTags } from '~/api/tags'
 import { Tag } from '~/types/tag'
 import { CommonMultiSelectMenu } from '~/components/shared/form/common-multi-select-menu'
-import { SubmitBtn } from '~/components/shared/ui/buttons'
+import { CancelBtn, SubmitBtn } from '~/components/shared/ui/buttons'
 import { ModifyContactFields } from '~/components/contacts/modify-contact-fields'
 import { ActionFunctionArgs } from '@remix-run/node'
+import { FormActionWrapper } from '~/components/shared/ui/form-action-wrapper'
 
 export const handle = {
   heading: LABELS.ADD_NEW_CONTACT,
@@ -128,13 +129,17 @@ export default function AddContactPage() {
     },
   })
 
+  const handleCancel = () => {
+    navigate(-1)
+  }
+
   const handleSubmit = (values: ModifyContact) => {
-    const formattedValues = sanitizeObj(values)
+    const payload = sanitizeObj(values)
 
     fetcher.submit(
       {
         action: ResourceAction.ADD_CONTACT,
-        ...formattedValues,
+        ...payload,
         ...(selectedTags.length && { tags: selectedTags }),
       },
       { method: 'POST', encType: 'application/json' }
@@ -164,12 +169,14 @@ export default function AddContactPage() {
         </form>
       </Form>
 
-      {/* Submit Button */}
-      <SubmitBtn
-        name={CONSTANTS.MODIFY_CONTACT_FORM}
-        child={LABELS.SAVE}
-        className="w-full mt-8"
-      />
+      {/* Form Action */}
+      <FormActionWrapper className="mt-8">
+        <CancelBtn onClick={handleCancel} />
+        <SubmitBtn
+          name={CONSTANTS.MODIFY_CONTACT_FORM}
+          child={LABELS.SAVE}
+        />
+      </FormActionWrapper>
     </div>
   )
 }

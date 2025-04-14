@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
@@ -37,6 +37,8 @@ import { VALUES } from '~/lib/values'
 import { addDraft } from '~/api/drafts'
 import { addEmail } from '~/api/emails'
 import { ActionFunctionArgs } from '@remix-run/node'
+import { useModal } from '~/context/modal-context'
+import { ActionLabel } from '~/components/shared/ui/action-label'
 
 const baseURL = getBaseURL()
 
@@ -145,6 +147,9 @@ export default function ComposePage() {
   const contactsFetcher = useFetcher<Response>()
   const tagsFetcher = useFetcher<Response>()
   const sendersFetcher = useFetcher<Response>()
+
+  // Global States
+  const { openModal, closeModal } = useModal()
 
   // Local States
   const [contacts, setContacts] = useState<Contact[]>([])
@@ -358,6 +363,18 @@ export default function ComposePage() {
     navigate(-1)
   }
 
+  const navigateToAddContact = useCallback(() => {
+    navigate('/contacts/add')
+  }, [navigate])
+
+  const navigateToAddSender = useCallback(() => {
+    navigate('/senders/add')
+  }, [navigate])
+
+  const addTag = useCallback(() => {
+    openModal('modify-tag', {})
+  }, [openModal])
+
   const getPayload = () => {
     const values = composeEmailForm.getValues()
 
@@ -463,7 +480,12 @@ export default function ComposePage() {
             <CommonMultiSelectMenu
               data={contactOptions}
               selectedOptions={selectedContacts}
-              label={LABELS.CONTACTS}
+              label={
+                <ActionLabel
+                  label={LABELS.CONTACTS}
+                  onAction={navigateToAddContact}
+                />
+              }
               placeholder={PLACEHOLDERS.CONTACTS}
               onChange={setSelectedContacts}
               readOnly={contactsFetcher.state === 'loading'}
@@ -473,7 +495,12 @@ export default function ComposePage() {
             <CommonSelectMenu
               data={senderOptions}
               selectedOption={selectedSender}
-              label={LABELS.SENDER}
+              label={
+                <ActionLabel
+                  label={LABELS.SENDER}
+                  onAction={navigateToAddSender}
+                />
+              }
               placeholder={PLACEHOLDERS.SENDER}
               onChange={setSelectedSender}
               readOnly={sendersFetcher.state === 'loading'}

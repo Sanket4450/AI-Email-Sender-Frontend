@@ -54,6 +54,7 @@ export async function action({
       }
 
     case ResourceAction.ADD_COMPANY:
+      console.log('add company', data)
       return await safeExecute(async () => {
         await addCompany(data)
         return {
@@ -131,6 +132,7 @@ export default function AddCompanyPage() {
   }
 
   const handleSubmit = (values: ModifyCompany) => {
+    console.log('ek taal')
     const payload = sanitizeObj(values)
 
     fetcher.submit(

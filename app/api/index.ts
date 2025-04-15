@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { REQ_METHODS } from '~/lib/constants'
+import { getBaseURL } from '~/lib/utils'
 
-const baseURL = process.env.VITE_BACKEND_URL
+const baseURL = getBaseURL()
 
 interface ApiCallProps {
   url: string
@@ -19,6 +20,7 @@ export async function apiCall({
   body = {},
 }: ApiCallProps): Promise<any> {
   try {
+    console.log('url: ', `${baseURL}/api/${url}`)
     const response = await axios.request({
       url: `${baseURL}/api/${url}`,
       method,
